@@ -1,0 +1,7 @@
+//TO CREATE APP: 
+    npx create-electron-app@latest electron-typescript-test --template=vite-typescript
+
+1/17/2026
+used google gemini to update the ts config files, what a pain
+
+works but red squigley in vite.renderer.config.mts is still there. HMR works!

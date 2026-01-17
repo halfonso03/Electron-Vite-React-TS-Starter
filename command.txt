@@ -1,0 +1,1 @@
+// npx create-electron-app@latest electron-typescript-test --template=vite-typescript
