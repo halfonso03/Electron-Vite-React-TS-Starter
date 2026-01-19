@@ -6,8 +6,8 @@
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "outDir": "../../dist/renderer"
   },
   "include": ["."]
 }

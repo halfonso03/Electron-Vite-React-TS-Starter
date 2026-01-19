@@ -1,9 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { UserData, ApiResponse } from '@common/types';
 
-// Expose protected methods that allow the renderer process to use
-// the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld('electronAPI', {
-  sendMessage: (message: string) => ipcRenderer.send('message-from-ui', message),
-  onUpdate: (callback: (event: any, value: string) => void) => 
-    ipcRenderer.on('update-data', callback),
+  // We wrap the invoke call in a typed function
+  getUser: (id: number): Promise<ApiResponse<UserData>> =>
+    ipcRenderer.invoke('get-user', id),
 });

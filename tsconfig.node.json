@@ -1,9 +1,14 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "composite": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
-    "allowSyntheticDefaultImports": true
+    "types": ["node"]
   },
-  "include": ["vite.config.ts", "forge.config.ts", "vite.*.config.ts"]
+  "include": [
+    "vite.main.config.mts",
+    "vite.preload.config.mts",
+    "vite.renderer.config.mts",
+    "forge.config.ts"
+  ]
 }

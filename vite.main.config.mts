@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import pkg from './package.json'; // Ensure "resolveJsonModule" is true in tsconfig
-
 export default defineConfig({
   build: {
     lib: {
