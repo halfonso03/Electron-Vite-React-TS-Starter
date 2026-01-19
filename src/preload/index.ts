@@ -5,4 +5,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // We wrap the invoke call in a typed function
   getUser: (id: number): Promise<ApiResponse<UserData>> =>
     ipcRenderer.invoke('get-user', id),
+
+  insertUser: (name: string, email: string): Promise<ApiResponse<UserData>> =>
+    ipcRenderer.invoke('insert-user', { name: name, email: email }),
 });

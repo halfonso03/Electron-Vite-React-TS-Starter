@@ -21,10 +21,11 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Paths */
-    "baseUrl": ".", 
+    "baseUrl": ".",
     "paths": {
       "@common/*": ["src/common/*"]
-    }
+    },
+    "types": ["node"]
   },
   "include": ["./*"],
   "exclude": ["node_modules", ".vite"]
