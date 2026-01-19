@@ -2,6 +2,10 @@
     npx create-electron-app@latest electron-typescript-test --template=vite-typescript
 
 1/17/2026
-used google gemini to update the ts config files, what a pain
+    used google gemini to update the ts config files, what a pain
+    works but red squigley in vite.renderer.config.mts is still there. HMR works!
 
-works but red squigley in vite.renderer.config.mts is still there. HMR works!
+
+remoeved this from package.json
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
