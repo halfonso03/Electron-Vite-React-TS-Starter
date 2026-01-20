@@ -15,12 +15,12 @@ export default function setUpHandlers() {
         };
     });
 
-    ipcMain.handle('insert-user', async (event, { name, email }: { name: string, email: string }): Promise<ApiResponse<NoData>> => {
+    ipcMain.handle('insert-user', async (event, params): Promise<ApiResponse<NoData>> => {
 
-        console.log(name, email)
+        console.log(params, '123')
 
-        
-        await db.insert(UserTable).values({ name, email });
+
+        await db.insert(UserTable).values(params)
         return {
             success: true,
         };

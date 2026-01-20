@@ -1,2 +1,15 @@
-// See the Electron documentation for details on how to use preload scripts:
-// https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
+const electron = require("electron");
+
+async function getConfig() {
+    let config = null;
+    const ipcRenderer = electron.ipcRenderer || false;
+    if (ipcRenderer) {
+        ipcRenderer.on("envReply", (event: any, arg: any) => {
+            config = arg.parsed;
+            return config.parsed;
+        });
+        ipcRenderer.send("invokeEnv");
+    }
+}
+
+getConfig();

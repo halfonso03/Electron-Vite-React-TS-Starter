@@ -11,7 +11,6 @@ export default function App() {
       // Calling the bridge function from window.electronAPI
       const response: ApiResponse<UserData> =
         await window.electronAPI.getUser(1);
-      console.log('here2');
       if (response.success && response.data) {
         setUser(response.data);
       } else {

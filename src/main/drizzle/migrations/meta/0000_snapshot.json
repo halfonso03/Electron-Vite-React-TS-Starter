@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "1d70ba91-f69e-4611-86fb-bfe4c490239b",
+  "id": "883646b8-0ddd-4d14-b4e4-0befeb5a7b6e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "users": {
@@ -34,7 +34,7 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'\"2026-01-19T17:53:08.266Z\"'"
+          "default": "'\"2026-01-19T18:02:49.364Z\"'"
         }
       },
       "indexes": {},
