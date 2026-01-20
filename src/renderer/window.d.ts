@@ -1,5 +1,5 @@
-import { AddAssigneeDTO } from '@common/assignee';
-import { UserData, VoidResponse } from '@common/types';
+import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
+import { DataResponse, UserData, VoidResponse } from '@common/types';
 
 
 declare global {
@@ -7,7 +7,9 @@ declare global {
         electronAPI: {
             getUser: (id: number) => Promise<ApiResponse<UserData>>;
             insertUser: ({ name: string, email: string }) => Promise<ApiResponse<NoData>>;
-            addAssignee: (params: AddAssigneeDTO) => Promise<VoidResponse>;
+            addAssignee: (params: AddAssigneeDto) => Promise<VoidResponse>;
+            getAssignees: () => Promise<DataResponse<AssigneeDto[]>>
+            getInitiatives: () => Promise<DataResponse<Initiative[]>>
         };
     }
 }

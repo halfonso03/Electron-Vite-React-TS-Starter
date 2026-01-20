@@ -20,3 +20,5 @@ export interface VoidResponse {
 }
 
 export interface NoData { }
+
+export type asyncFn<T> = () => Promise<DataResponse<T>>;

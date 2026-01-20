@@ -8,9 +8,7 @@ CREATE TABLE `Assignee` (
 	`type` integer NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `users` (
-	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`email` text NOT NULL,
-	`name` text NOT NULL,
-	`created_at` integer DEFAULT '"2026-01-20T15:51:49.267Z"' NOT NULL
+CREATE TABLE `Initiative` (
+	`id` integer PRIMARY KEY NOT NULL,
+	`name` text NOT NULL
 );

@@ -1,6 +1,8 @@
+import { InitiativeDto } from '@common/initiative';
 import { contextBridge, ipcRenderer } from 'electron';
-import { ApiResponse, UserData, VoidResponse } from '@common/types';
-import { AddAssigneeDTO } from '@common/assignee';
+import { ApiResponse, DataResponse, UserData, VoidResponse } from '@common/types';
+import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
+
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // We wrap the invoke call in a typed function
@@ -11,9 +13,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('insert-user', params);
   },
 
-  addAssignee: (params: AddAssigneeDTO): Promise<VoidResponse> => {
+  addAssignee: (params: AddAssigneeDto): Promise<VoidResponse> => {
     return ipcRenderer.invoke('add-assignee', params);
   },
+
+  getAssignees: (): Promise<DataResponse<AssigneeDto[]>> => {
+    return ipcRenderer.invoke('get-assignees');
+  },
+
+  getInitiatives: (): Promise<DataResponse<InitiativeDto[]>> => {
+    return ipcRenderer.invoke('get-initiatives');
+  }
+
 
 
 });

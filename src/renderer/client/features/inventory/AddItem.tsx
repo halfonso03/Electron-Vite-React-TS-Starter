@@ -4,6 +4,7 @@ import ButtonText from '../../ui/ButtonText';
 // import ItemForm from './ItemForm';
 // import { useItem } from '../../api/hooks/useItem';
 import type { ItemFormData } from '../../schemas/itemSchema';
+import ItemForm from './ItemForm';
 
 export default function AddItem() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function AddItem() {
           &larr; Back
         </ButtonText>
       </Box>
-      {/* <ItemForm item={defaultValues} submit={onSubmit}></ItemForm> */}
+      <ItemForm item={defaultValues} submit={onSubmit}></ItemForm>
     </>
   );
 }
