@@ -10,4 +10,13 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
+export interface DataResponse<T> {
+  data?: T;
+}
+
+export interface VoidResponse {
+  success: boolean;
+  error?: string;
+}
+
 export interface NoData { }

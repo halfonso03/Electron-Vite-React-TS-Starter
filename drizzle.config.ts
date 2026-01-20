@@ -1,7 +1,9 @@
 import { defineConfig } from "drizzle-kit";
+import config from "dotenv";
 
-// Load .env files, usually .env.local for local development
+const isDev = process.env.NODE_ENV === 'development';
 
+config.config({ path: ".env.development" });
 
 export default defineConfig({
     dialect: 'sqlite',

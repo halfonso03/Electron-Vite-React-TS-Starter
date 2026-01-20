@@ -1,8 +1,11 @@
 export default function SqlTest() {
   const insert = async () => {
-    await window.electronAPI.insertUser({
-      name: 'hector',
+    await window.electronAPI.addAssignee({
+      firstName: 'hector',
+      lastName: 'alfonso',
       email: 'hialfonso@nhac.org',
+      extension: '123',
+      type: 1,
     });
   };
 

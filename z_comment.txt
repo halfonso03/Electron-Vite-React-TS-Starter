@@ -9,3 +9,7 @@
 remoeved this from package.json
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
+
+
+since different node versions for drizzl and electron:
+    run  npm rebuild better-sqlite3 then npx drizzle-kit migrate then npm run rebuild to get app to run

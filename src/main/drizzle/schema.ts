@@ -5,6 +5,7 @@ export const UserTable = sqliteTable("users", {
     id: integer("id").primaryKey({ autoIncrement: true }),
 
     email: text("email").notNull(),
+
     name: text("name").notNull(),
 
     createdAt: integer("created_at", { mode: "timestamp" })
@@ -12,4 +13,24 @@ export const UserTable = sqliteTable("users", {
         .default(new Date())
 });
 
-//  email: text("email").notNull().unique(),
+
+
+export const AssigneeTable = sqliteTable("Assignee", {
+    id: integer("id").primaryKey(),
+
+    locatioName: text("locatioName"),
+
+    firstName: text("firstName"),
+
+    lastName: text("lastName"),
+
+    email: text("email"),
+
+    extension: text("extension"),
+
+    type: integer("type").notNull(),
+
+})
+
+
+

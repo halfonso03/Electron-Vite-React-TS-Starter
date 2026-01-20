@@ -11,6 +11,7 @@ export default defineConfig({
       // Use the imported pkg object instead of require
       external: [
         'electron',
+        'better-sqlite3',
         ...Object.keys(pkg.dependencies || {}),
       ],
     },

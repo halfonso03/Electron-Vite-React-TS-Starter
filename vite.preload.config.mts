@@ -9,7 +9,7 @@ export default defineConfig({
     },
     outDir: '.vite/preload',
     rollupOptions: {
-      external: ['electron'],
+      external: ['electron', 'better-sqlite3'],
     },
   },
 });
