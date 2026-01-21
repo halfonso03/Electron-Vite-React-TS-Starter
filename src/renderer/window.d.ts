@@ -1,4 +1,5 @@
 import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
+import { AddInitiativeDto } from '@common/initiative';
 import { DataResponse, UserData, VoidResponse } from '@common/types';
 
 
@@ -10,6 +11,8 @@ declare global {
             addAssignee: (params: AddAssigneeDto) => Promise<VoidResponse>;
             getAssignees: () => Promise<DataResponse<AssigneeDto[]>>
             getInitiatives: () => Promise<DataResponse<Initiative[]>>
+            addInitiative: (params: AddInitiativeDto) => Promise<VoidResponse>
+            delete: () => Promise<VoidResponse>
         };
     }
 }

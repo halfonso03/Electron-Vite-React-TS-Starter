@@ -1,6 +1,9 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { itemFormSchema, type ItemFormData } from '../../schemas/itemSchema';
+import {
+  itemFormSchema,
+  type ItemFormData,
+} from '../../form-validation-schemas/itemSchema';
 import Form from '../../ui/Form';
 import FormRow from '../../ui/FormRow';
 import Select from '../../ui/Select';
@@ -11,15 +14,15 @@ import { formatDate } from 'date-fns';
 import { Box } from '../../ui/Box';
 import Button from '../../ui/Button';
 import Modal from '../../components/Modal';
-import type { AssigneeFormData } from '../../schemas/personSchema';
-import useAssignments from '../../api/hooks/useAssignment';
+import type { AssigneeFormData } from '../../form-validation-schemas/personSchema';
+import useAssignments from '../../api-hooks/useAssignment';
 import toast from 'react-hot-toast';
-import { useInitiative } from '../../api/hooks/useInitiative';
+import { useInitiative } from '../../api-hooks/useInitiative';
 import PersonModal from '../person/PersonModal';
 import { AssigneeDto } from '@common/assignee';
 import { InitiativeDto } from '@common/initiative';
 
-import useFetchDb from '../../api/hooks/useFetchDb';
+import useFetchDb from '../../api-hooks/useFetchDb';
 
 type Props = {
   item?: Item;

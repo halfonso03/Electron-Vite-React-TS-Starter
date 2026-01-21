@@ -1,5 +1,5 @@
-import { useInventory } from '../../api/hooks/useInventory';
 // import { usePagination } from "../../app/contexts/usePagination";
+import { useInventory } from '../../api-hooks/useInventory';
 import { Box } from '../../ui/Box';
 import { Pagination } from '../../ui/Pagination';
 import Table from '../../ui/Table';
@@ -7,9 +7,12 @@ import ItemRow from '../items/ItemRow';
 
 export default function InventoryList() {
   const searchTerm = '';
+  const itemStatusFilter = '1';
 
   // const { setPageNumber, itemStatusFilter, searchTerm } = usePagination();
-  // const { itemResults, loadingItems } = useInventory(itemStatusFilter);
+  const { itemResults } = useInventory(itemStatusFilter);
+
+  console.log('itemResults', itemResults)
 
   const items: Item[] = [];
 

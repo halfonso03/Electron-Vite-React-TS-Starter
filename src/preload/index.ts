@@ -1,4 +1,4 @@
-import { InitiativeDto } from '@common/initiative';
+import { AddInitiativeDto, InitiativeDto } from '@common/initiative';
 import { contextBridge, ipcRenderer } from 'electron';
 import { ApiResponse, DataResponse, UserData, VoidResponse } from '@common/types';
 import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   addAssignee: (params: AddAssigneeDto): Promise<VoidResponse> => {
+    console.log('params', params)
     return ipcRenderer.invoke('add-assignee', params);
   },
 
@@ -23,9 +24,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   getInitiatives: (): Promise<DataResponse<InitiativeDto[]>> => {
     return ipcRenderer.invoke('get-initiatives');
+  },
+
+  addInitiative: (params: AddInitiativeDto): Promise<VoidResponse> => {
+    return ipcRenderer.invoke('add-initiative', params);
+  },
+
+  delete: (): Promise<VoidResponse> => {
+    return ipcRenderer.invoke('delete');
   }
-
-
 
 });
 

@@ -10,7 +10,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import {
   assigneeFormSchema,
   type AssigneeFormData,
-} from '../../schemas/personSchema';
+} from '../../form-validation-schemas/personSchema';
 
 type Props = {
   cancelModal: () => void;
@@ -24,7 +24,7 @@ const assigneeTypes: SelectOption[] = [
 
 export default function PersonModal({ cancelModal, addPerson }: Props) {
   const [selectedAssigneeType, setSelectedAssigneeType] = useState<string>(
-    assigneeTypes[0].value
+    assigneeTypes[0].value,
   );
 
   const {

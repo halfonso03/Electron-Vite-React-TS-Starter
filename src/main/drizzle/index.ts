@@ -8,5 +8,5 @@ config.config({ path: process.env.NODE_ENV === 'development' ? ".env.development
 const sqlite = new Database(process.env.DATABASE_URL);
 
 export const db = drizzle(sqlite, {
-    schema,
+    schema, logger: true
 });

@@ -1,5 +1,5 @@
 
-import type { AssigneeFormData } from "../../schemas/personSchema";
+import type { AssigneeFormData } from "../form-validation-schemas/personSchema";
 
 const useAssignments = () => {
 

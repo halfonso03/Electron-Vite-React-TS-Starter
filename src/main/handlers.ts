@@ -1,5 +1,5 @@
 import { InitiativeDto } from './../common/initiative';
-import { AssigneeDto } from '@common/assignee';
+import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
 import { DataResponse, VoidResponse } from "@common/types";
 import { ipcMain } from "electron";
 import { db } from "./drizzle";
@@ -26,13 +26,37 @@ export default function setUpHandlers() {
         };
     });
 
-    ipcMain.handle('add-assignee', async (_, params): Promise<VoidResponse> => {
+    ipcMain.handle('add-assignee', async (_, params: AddAssigneeDto): Promise<VoidResponse> => {
 
+
+        console.log('params', params)
         await db.insert(AssigneeTable).values(params);
 
         return {
             success: true,
         };
     });
+
+
+    ipcMain.handle('add-initiative', async (_, params): Promise<VoidResponse> => {
+
+        await db.insert(InitiativeTable).values(params);
+
+        return {
+            success: true,
+        };
+    });
+
+    ipcMain.handle('delete', async (): Promise<VoidResponse> => {
+
+        await db.delete(AssigneeTable);
+        await db.delete(InitiativeTable);
+
+        return {
+            success: true,
+        };
+    });
+
+
 }
 

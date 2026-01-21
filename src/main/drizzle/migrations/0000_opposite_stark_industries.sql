@@ -1,6 +1,6 @@
 CREATE TABLE `Assignee` (
 	`id` integer PRIMARY KEY NOT NULL,
-	`locatioName` text,
+	`locationName` text,
 	`firstName` text,
 	`lastName` text,
 	`email` text,

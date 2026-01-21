@@ -1,6 +1,8 @@
 import { Link, Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './ui/Header';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const StyledOutlet = styled.div`
   background-color: var(--color-gray-900);
@@ -12,24 +14,12 @@ const StyledContainer = styled.div`
 `;
 
 export default function App() {
-  // const handleFetchUser = async () => {
-  //   setError(null);
-  //   try {
-  //     // Calling the bridge function from window.electronAPI
-  //     const response: ApiResponse<UserData> =
-  //       await window.electronAPI.getUser(1);
-  //     if (response.success && response.data) {
-  //       setUser(response.data);
-  //     } else {
-  //       setError(response.error || 'Failed to fetch user');
-  //     }
-  //   } catch (err) {
-  //     setError('System error: ' + (err as Error).message);
-  //   }
-  // };
+  const queryClient = new QueryClient();
+
+  window.electronAPI.delete();
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <StyledContainer className="w-full">
         <Header>
           <Link to={'/'}>MTF Inventory</Link>
@@ -38,6 +28,7 @@ export default function App() {
           <Outlet></Outlet>
         </StyledOutlet>
       </StyledContainer>
-    </>
+      <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
+    </QueryClientProvider>
   );
 }

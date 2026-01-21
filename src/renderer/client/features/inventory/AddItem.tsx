@@ -3,7 +3,7 @@ import { Box } from '../../ui/Box';
 import ButtonText from '../../ui/ButtonText';
 // import ItemForm from './ItemForm';
 // import { useItem } from '../../api/hooks/useItem';
-import type { ItemFormData } from '../../schemas/itemSchema';
+import type { ItemFormData } from '../../form-validation-schemas/itemSchema';
 import ItemForm from './ItemForm';
 
 export default function AddItem() {

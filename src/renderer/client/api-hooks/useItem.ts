@@ -1,6 +1,6 @@
 // import agent from "../agent"
-import { formatItem } from "../../helpers/ItemHelpers";
-import type { ItemFormData } from "../../schemas/itemSchema";
+import { formatItem } from "../helpers/ItemHelpers";
+import type { ItemFormData } from "../form-validation-schemas/itemSchema";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 

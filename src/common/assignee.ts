@@ -1,6 +1,6 @@
-enum AssigneeType {
-    Individual, // 0
-    Location,  // 1
+export enum AssigneeType {
+    Individual = 1,
+    Location = 2,
 }
 
 
@@ -11,7 +11,8 @@ export interface Assignee {
     lastName?: string | undefined | null
     email?: string | undefined | null
     extension?: string | undefined | null
-    type: AssigneeType | number
+    type: AssigneeType | number,
+    created_at: Date
 }
 
 export interface AddAssigneeDto {
