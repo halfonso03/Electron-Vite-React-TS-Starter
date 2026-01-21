@@ -17,18 +17,12 @@ const useAssignments = () => {
 				locationName: data.locationName,
 				assigneeTypeId: data.assigneeTypeId!
 			};
-			// const response = await agent.post(`inventory/assignee/add`, data);
-
-			console.log('addAssigneeDto', addAssigneeDto)
 
 			const response = await window.electronAPI.addAssignee(addAssigneeDto)
 
 			return response.data as AssigneeDto;
 		},
 		onSuccess: (createdAssignee: AddAssigneeDto) => {
-
-			console.log('createdAssignee', createdAssignee);
-
 			queryClient.setQueryData(["assignees"], (old: AssigneeDto[]) => [
 				...old,
 				createdAssignee,

@@ -14,32 +14,24 @@ import { Box } from '../../ui/Box';
 import Button from '../../ui/Button';
 import Modal from '../../components/Modal';
 import type { AssigneeFormData } from '../../form-validation-schemas/assigneeSchema';
-// import useAssignments from '../../api-hooks/useAssignment';
-// import toast from 'react-hot-toast';
-// import { useInitiative } from '../../api-hooks/useInitiative';
 import AssigneeModal from '../assignee/AssigneeModal';
 import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
-import { InitiativeDto } from '@common/initiative';
-import { Item } from '@common/item';
+import { Item, ItemDto } from '@common/item';
 import { ItemTypes } from '@common/itemType';
 
-import useFetchDb from '../../api-hooks/useFetchDb';
 import useAssignments from '../../api-hooks/useAssignment';
 import toast from 'react-hot-toast';
+import { useInitiative } from '../../api-hooks/useInitiative';
 
 type Props = {
-  item?: Item;
+  item?: ItemDto;
   submit: (item: ItemFormData) => void;
   toggleDisposal?: () => void;
 };
 
 export default function ItemForm({ item, submit, toggleDisposal }: Props) {
   const { assignees } = useAssignments();
-  // const { initiatives } = useInitiative();
-
-  const { data: initiatives } = useFetchDb<InitiativeDto[]>(
-    window.electronAPI.getInitiatives,
-  );
+  const { initiatives } = useInitiative();
 
   const { createAssignee } = useAssignments();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -127,7 +119,6 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
   };
 
   useEffect(() => {
-    console.log('newId', newId);
 
     if (item && item?.id > 0) {
       setValue('itemTypeId', item?.itemTypeId);
@@ -145,7 +136,6 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
       setValue('initiativeId', item.initiativeId);
     }
   }, [initiativeOptions?.length, item, newId, peopleOptions?.length, setValue]);
-
 
   if (!item) return;
 

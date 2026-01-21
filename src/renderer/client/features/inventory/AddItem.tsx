@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import { Box } from '../../ui/Box';
 import ButtonText from '../../ui/ButtonText';
-// import ItemForm from './ItemForm';
-// import { useItem } from '../../api/hooks/useItem';
 import type { ItemFormData } from '../../form-validation-schemas/itemSchema';
 import ItemForm from './ItemForm';
+import { ItemDto } from '@common/item';
+import { useItem } from '../../api-hooks/useItem';
 
 export default function AddItem() {
   const navigate = useNavigate();
 
-  //   const { createItem } = useItem();
+    const { createItem } = useItem();
 
-  const defaultValues: Item = {
+  const defaultValues: ItemDto = {
     id: 0,
     description: '',
     hbcNumber: '',
@@ -21,11 +21,11 @@ export default function AddItem() {
     assignedToId: 0,
     itemTypeId: 0,
     ipAddress: '',
-    createdOn: new Date(),
+    created_at: '',
     itemType: '',
-    itemStatusId: 1,
+    itemStatusId: 1,    
     itemStatus: '',
-    disposalDate: null,
+    // disposalDate: null,
   };
 
   function onSubmit(item: ItemFormData) {
@@ -43,3 +43,4 @@ export default function AddItem() {
     </>
   );
 }
+

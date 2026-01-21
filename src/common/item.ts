@@ -49,7 +49,7 @@ export type ItemDto = {
     // assignedToEmail?: string | null
     // assignedToExtension?: string | null,
     itemStatusId: number,
-    // itemStatus: string,
+    itemStatus: string,
     // disposalDate: Date | null,
     // kbmsId?: string,
     // vendorId?: string,

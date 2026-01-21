@@ -1,17 +1,15 @@
-// // import agent from "../agent";
+import { useQuery } from "@tanstack/react-query";
 
-// export const useInitiative = () => {
+export const useInitiative = () => {
 
-//     // const { data: initiatives, isLoading: loadingInitiatives } = useQuery({
-//     //     queryKey: ['initiatives'],
-//     //     queryFn: async () => {
-//     //         const response = await agent.get<Initiative[]>(`/initiative`);
-//     //         const data = response.data;
-//     //         return data;
-//     //     }
-//     // })
+    const { data: initiatives, isLoading: loadingInitiatives } = useQuery({
+        queryKey: ['initiatives'],
+        queryFn: async () => {
+            const response = await window.electronAPI.getInitiatives();
+            const data = response.data;
+            return data;
+        }
+    })
 
-//     const initiatives: Initiative[] = [];
-//     const loadingInitiatives = false;
-//     return { initiatives, loadingInitiatives }
-// }
+    return { initiatives, loadingInitiatives }
+}
