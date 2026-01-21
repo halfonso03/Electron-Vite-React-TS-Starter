@@ -43,9 +43,7 @@ export default function setUpHandlers() {
 
     ipcMain.handle('add-assignee', async (_, params: AddAssigneeDto): Promise<ResultResponse<AddAssigneeDto>> => {
 
-        console.log('21334', 21334)
         const results = await db.insert(AssigneeTable).values(params).returning({ insertedId: AssigneeTable.id });
-        console.log('5678', 5678)
         const newId = results[0].insertedId;
 
         console.log('newId', newId)
@@ -72,6 +70,7 @@ export default function setUpHandlers() {
         const response = await db.select().from(ItemTable);
 
         const items: ItemDto[] = response.map(i => {
+
             const item: ItemDto = {
                 id: i.id,
                 created_at: formatInTimeZone(i.created_at as string, 'America/New_York', 'yyyy-MM-dd HH:mm'),
@@ -88,6 +87,7 @@ export default function setUpHandlers() {
                 assignedToId: i.assignedToId as number | undefined,
                 initiativeId: i.initiativeId as number | undefined,
                 itemStatusId: i.itemStatusId,
+                itemStatus: getItemStatusText(i.itemStatusId)
             };
             return item;
         });
@@ -98,10 +98,26 @@ export default function setUpHandlers() {
         };
     });
 
+    ipcMain.handle('add-item', async (_, params): Promise<ResultResponse<ItemDto[]>> => {
+
+        console.log('params', params)
+
+        const results = await db.insert(ItemTable).values(params).returning({ insertedId: ItemTable.id, created_at: ItemTable.created_at });
+
+        params.id = results[0].insertedId;
+        params.created_at = results[0].created_at
+
+        return {
+            data: params,
+        };
+    });
+
+
     ipcMain.handle('delete', async (): Promise<VoidResponse> => {
 
         await db.delete(AssigneeTable);
         await db.delete(InitiativeTable);
+        await db.delete(ItemTable);
 
         return {
             success: true,
@@ -109,5 +125,20 @@ export default function setUpHandlers() {
     });
 
 
+}
+
+function getItemStatusText(itemStatusId: number): string {
+    switch (itemStatusId) {
+        case 1:
+            return "Unassigned"
+        case 2:
+            return "Assigned"
+        case 3:
+            return "TBD"
+        case 4:
+            return "Disposed"
+        default:
+            return ""
+    }
 }
 

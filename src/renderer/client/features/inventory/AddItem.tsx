@@ -9,7 +9,7 @@ import { useItem } from '../../api-hooks/useItem';
 export default function AddItem() {
   const navigate = useNavigate();
 
-    const { createItem } = useItem();
+  const { createItem } = useItem();
 
   const defaultValues: ItemDto = {
     id: 0,
@@ -23,13 +23,13 @@ export default function AddItem() {
     ipAddress: '',
     created_at: '',
     itemType: '',
-    itemStatusId: 1,    
+    itemStatusId: 1,
     itemStatus: '',
     // disposalDate: null,
   };
 
   function onSubmit(item: ItemFormData) {
-    // createItem(item);
+    createItem(item);
   }
 
   return (
@@ -39,8 +39,8 @@ export default function AddItem() {
           &larr; Back
         </ButtonText>
       </Box>
+      <span>Add item</span>
       <ItemForm item={defaultValues} submit={onSubmit}></ItemForm>
     </>
   );
 }
-

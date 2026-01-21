@@ -4,7 +4,9 @@ import type { ItemFormData } from "../form-validation-schemas/itemSchema";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ItemDto } from "@common/item";
+import { AddItemDto, ItemDto, ItemStatus } from "@common/item";
+import { number } from "yup";
+import { ItemTypes } from "@common/itemType";
 
 
 export const useItem = (id?: number) => {
@@ -22,18 +24,46 @@ export const useItem = (id?: number) => {
     // })
 
     const { mutate: createItem, isPending: isCreating, isSuccess: created } = useMutation({
-        mutationFn: async (item: ItemFormData) => {
+        mutationFn: async (itemFormData: ItemFormData) => {
 
-            console.log('item', item);
+            console.log('item to insert', itemFormData);
 
-            // const response = window.electronAPI.createItem(item); // await agent.post(`inventory`, item)
-            // return response.data;
-            const item2: ItemDto = { id: 0, hbcNumber: '', description: '', serialNumber: '', created_at: '', itemType: '', itemTypeId: 0, itemStatus: '', itemStatusId: 0 };
 
-            return item2;
+            const itemStatus = !itemFormData.assignedToId ? ItemStatus.Unassigned : ItemStatus.Assigned;
+
+            const addItemDto: AddItemDto = {
+                hbcNumber: itemFormData.hbcNumber,
+                description: itemFormData.description,
+                serialNumber: itemFormData.serialNumber as string | undefined,
+                itemType: '',
+                itemTypeId: itemFormData.itemTypeId as number,
+                itemStatusId: itemStatus,
+                computerName: itemFormData.computerName,
+                ipAddress: itemFormData.ipAddress,
+                macAddress: itemFormData.macAddress,
+                cabinetOrRack: itemFormData.cabinetOrRack,
+                cubicle_Room: itemFormData.cubicle_Room
+            };
+
+
+            console.log('item to insert', addItemDto);
+
+            const response = await window.electronAPI.createItem(addItemDto);
+
+            console.log('new data ', response.data)
+
+            const item: ItemDto = {
+                ...addItemDto,
+                itemStatus: itemStatus == ItemStatus.Unassigned ? 'Unassiged' : 'Assigned',
+                itemType: ItemTypes.filter(i => i.value == addItemDto.itemTypeId.toString()).at(0)?.text!,
+                id: response.data?.id!,
+                created_at: response.data?.created_at!
+            }
+
+            return item;
         },
         onSuccess: (item: ItemDto) => {
-            // console.log('create item', item)
+            console.log('useMutation onSuccess create item', item)
             toast.success('Item created');
             navigate(`/inventory/${item.id}`);
         }

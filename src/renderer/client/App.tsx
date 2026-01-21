@@ -17,7 +17,7 @@ const StyledContainer = styled.div`
 export default function App() {
   const queryClient = new QueryClient();
 
-  // window.electronAPI.delete();
+  window.electronAPI.delete();
 
   return (
     <QueryClientProvider client={queryClient}>

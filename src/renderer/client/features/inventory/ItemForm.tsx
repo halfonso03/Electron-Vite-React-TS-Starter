@@ -16,7 +16,7 @@ import Modal from '../../components/Modal';
 import type { AssigneeFormData } from '../../form-validation-schemas/assigneeSchema';
 import AssigneeModal from '../assignee/AssigneeModal';
 import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
-import { Item, ItemDto } from '@common/item';
+import { ItemDto } from '@common/item';
 import { ItemTypes } from '@common/itemType';
 
 import useAssignments from '../../api-hooks/useAssignment';
@@ -86,9 +86,9 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
       description: item?.description,
       computerName: item?.computerName,
       hbcNumber: item?.hbcNumber,
-      assignedToId: item?.assignedToId ?? 0,
+      assignedToId: item?.assignedToId,
       ipAddress: item?.ipAddress,
-      initiativeId: item?.initiativeId ?? 0,
+      initiativeId: item?.initiativeId,
       cubicle_Room: item?.cubicle_Room,
       itemTypeId: item?.itemTypeId,
       macAddress: item?.macAddress,
@@ -119,7 +119,6 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
   };
 
   useEffect(() => {
-
     if (item && item?.id > 0) {
       setValue('itemTypeId', item?.itemTypeId);
     }
@@ -202,7 +201,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="serialNumber"
-                defaultValue={item.serialNumber}
+                defaultValue={item.serialNumber ?? ''}
                 {...register('serialNumber')}
               ></Input>
             </FormRow>
@@ -230,7 +229,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="location"
-                defaultValue={item.computerName}
+                defaultValue={item.computerName ?? ''}
                 {...register('computerName')}
                 className={
                   ' form-element ' +
@@ -242,7 +241,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="ipAddress"
-                defaultValue={item.ipAddress}
+                defaultValue={item.ipAddress ?? undefined}
                 {...register('ipAddress')}
               ></Input>
             </FormRow>
@@ -250,7 +249,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="macAddress"
-                defaultValue={item.macAddress}
+                defaultValue={item.macAddress ?? undefined}
                 {...register('macAddress')}
               ></Input>
             </FormRow>
@@ -272,7 +271,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="cubicle_Room"
-                defaultValue={item.cubicle_Room}
+                defaultValue={item.cubicle_Room ?? ''}
                 {...register('cubicle_Room')}
               ></Input>
             </FormRow>
@@ -294,7 +293,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="cabinetOrRack"
-                defaultValue={item.cabinetOrRack}
+                defaultValue={item.cabinetOrRack ?? undefined}
                 {...register('cabinetOrRack')}
                 className={
                   ' form-element ' +

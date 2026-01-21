@@ -39,7 +39,7 @@ export const ItemTable = sqliteTable("Item", {
 
     description: text("description").notNull(),
 
-    created_at: text().default(sql`(CURRENT_TIMESTAMP)`),
+    created_at: text().default(sql`(CURRENT_TIMESTAMP)`).notNull(),
 
     hbcNumber: text("hbcNumber").notNull(),
 

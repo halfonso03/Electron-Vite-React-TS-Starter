@@ -13,40 +13,6 @@ export default function Inventory() {
   const itemStatusFilter = '';
   const setItemStatusFilter = () => {};
 
-  const addAss1 = async () => {
-    const suffix = Math.round(Math.random() * 100);
-
-    window.electronAPI.addAssignee({
-      firstName: `Hector_${suffix}`,
-      lastName: `Alfonso_${suffix}`,
-      email: `hialfonso@Nhac.org_${suffix}`,
-      extension: '123',
-      assigneeTypeId: AssigneeType.Individual,
-      locationName: null,
-    });
-  };
-
-  const addAss2 = async () => {
-    const suffix = Math.round(Math.random() * 100);
-
-    window.electronAPI.addAssignee({
-      locationName: `DEA Desk 1_${suffix}`,
-      firstName: null,
-      lastName: null,
-      email: null,
-      extension: null,
-      assigneeTypeId: AssigneeType.Location,
-    });
-  };
-
-  const addInit = async () => {
-    const suffix = Math.round(Math.random() * 100);
-
-    window.electronAPI.addInitiative({
-      name: `Initiative_${suffix}`,
-    });
-  };
-
   return (
     <>
       <div className=" text-end pb-4">
@@ -58,15 +24,7 @@ export default function Inventory() {
           Add Inventory Item
         </Button>
       </div>
-      <Button onClick={addAss1} variation="primary">
-        Add Person Assignee
-      </Button>
-      <Button onClick={addAss2} variation="primary">
-        Add Location Assignee
-      </Button>
-      <Button onClick={addInit} variation="primary">
-        Add Initaitives
-      </Button>
+
       <Box className="flex">
         <InventoryFilters
           itemStatusFilter={itemStatusFilter}

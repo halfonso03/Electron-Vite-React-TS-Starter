@@ -36,6 +36,13 @@
       "when": 1769014756621,
       "tag": "0004_clear_stingray",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1769029091677,
+      "tag": "0005_hard_kat_farrell",
+      "breakpoints": true
     }
   ]
 }

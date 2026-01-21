@@ -18,7 +18,7 @@ const useAssignments = () => {
 				assigneeTypeId: data.assigneeTypeId!
 			};
 
-			const response = await window.electronAPI.addAssignee(addAssigneeDto)
+			const response = await window.electronAPI.createAssignee(addAssigneeDto)
 
 			return response.data as AssigneeDto;
 		},

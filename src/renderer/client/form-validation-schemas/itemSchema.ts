@@ -28,9 +28,9 @@ export interface ItemFormData {
     itemTypeId?: number
     assignedToId?: number | null
     serialNumber?: string | null
-    ipAddress?: string | null
-    macAddress?: string | null
-    cabinetOrRack?: string | null,
+    ipAddress?: string | null | undefined
+    macAddress?: string | null | undefined
+    cabinetOrRack?: string | null | undefined,
     initiativeId?: number | undefined | null
     cubicle_Room?: string | null,
     kbmsId?: string | null,
