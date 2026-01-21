@@ -1,33 +1,38 @@
+import { ItemDto } from '@common/item';
 import { AddInitiativeDto, InitiativeDto } from '@common/initiative';
 import { contextBridge, ipcRenderer } from 'electron';
-import { ApiResponse, DataResponse, UserData, VoidResponse } from '@common/types';
+import { ResultResponse, VoidResponse } from '@common/types';
 import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
 
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // We wrap the invoke call in a typed function
-  getUser: (id: number): Promise<ApiResponse<UserData>> =>
-    ipcRenderer.invoke('get-user', id),
 
   insertUser: (params: { name: string, email: string }): Promise<VoidResponse> => {
     return ipcRenderer.invoke('insert-user', params);
   },
 
-  addAssignee: (params: AddAssigneeDto): Promise<VoidResponse> => {
+  addAssignee: (params: AddAssigneeDto): Promise<ResultResponse<AddAssigneeDto>> => {
+
     console.log('params', params)
+
     return ipcRenderer.invoke('add-assignee', params);
   },
 
-  getAssignees: (): Promise<DataResponse<AssigneeDto[]>> => {
+  getAssignees: (): Promise<ResultResponse<AssigneeDto[]>> => {
     return ipcRenderer.invoke('get-assignees');
   },
 
-  getInitiatives: (): Promise<DataResponse<InitiativeDto[]>> => {
+  getInitiatives: (): Promise<ResultResponse<InitiativeDto[]>> => {
     return ipcRenderer.invoke('get-initiatives');
   },
 
   addInitiative: (params: AddInitiativeDto): Promise<VoidResponse> => {
     return ipcRenderer.invoke('add-initiative', params);
+  },
+
+  getItems: (): Promise<ResultResponse<ItemDto[]>> => {
+    return ipcRenderer.invoke('get-items');
   },
 
   delete: (): Promise<VoidResponse> => {

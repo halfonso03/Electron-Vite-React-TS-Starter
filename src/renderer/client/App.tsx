@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Header from './ui/Header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from 'react-hot-toast';
 
 const StyledOutlet = styled.div`
   background-color: var(--color-gray-900);
@@ -16,7 +17,7 @@ const StyledContainer = styled.div`
 export default function App() {
   const queryClient = new QueryClient();
 
-  window.electronAPI.delete();
+  // window.electronAPI.delete();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -28,6 +29,29 @@ export default function App() {
           <Outlet></Outlet>
         </StyledOutlet>
       </StyledContainer>
+      <Toaster
+        position="top-center"
+        gutter={12}
+        containerStyle={{ margin: '8px' }}
+        toastOptions={{
+          position: 'bottom-right',
+          success: {
+            duration: 2000,
+          },
+
+          error: {
+            duration: 3000,
+          },
+          style: {
+            fontSize: '16px',
+            maxWidth: '500px',
+            padding: '12px 20px',
+            backgroundColor: 'var(--color-grey-800)',
+            color: 'var(--color-grey-200)',
+            border: '1px solid var(--color-grey-700)',
+          },
+        }}
+      ></Toaster>
       <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
     </QueryClientProvider>
   );

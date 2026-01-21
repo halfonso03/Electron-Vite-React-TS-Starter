@@ -21,7 +21,8 @@ export default function Inventory() {
       lastName: `Alfonso_${suffix}`,
       email: `hialfonso@Nhac.org_${suffix}`,
       extension: '123',
-      type: AssigneeType.Individual,
+      assigneeTypeId: AssigneeType.Individual,
+      locationName: null,
     });
   };
 
@@ -34,7 +35,7 @@ export default function Inventory() {
       lastName: null,
       email: null,
       extension: null,
-      type: AssigneeType.Location,
+      assigneeTypeId: AssigneeType.Location,
     });
   };
 

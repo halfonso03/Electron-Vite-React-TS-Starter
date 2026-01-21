@@ -10,7 +10,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import {
   assigneeFormSchema,
   type AssigneeFormData,
-} from '../../form-validation-schemas/personSchema';
+} from '../../form-validation-schemas/assigneeSchema';
 
 type Props = {
   cancelModal: () => void;
@@ -22,7 +22,7 @@ const assigneeTypes: SelectOption[] = [
   { value: '2', text: 'Location' },
 ];
 
-export default function PersonModal({ cancelModal, addPerson }: Props) {
+export default function AssigneeModal({ cancelModal, addPerson }: Props) {
   const [selectedAssigneeType, setSelectedAssigneeType] = useState<string>(
     assigneeTypes[0].value,
   );
@@ -105,7 +105,13 @@ export default function PersonModal({ cancelModal, addPerson }: Props) {
             ></Input>
           </FormRow>
           <FormRow id="extension" label="Extension">
-            <Input id="extension"></Input>
+            <Input
+              id="extension"
+              {...register('extension')}
+              className={
+                ' form-element ' + (errors?.extension?.message ? ' error ' : '')
+              }
+            ></Input>
           </FormRow>
         </>
       )}

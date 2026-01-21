@@ -1,0 +1,1 @@
+ALTER TABLE `Assignee` RENAME COLUMN "type" TO "assigneeTypeId";

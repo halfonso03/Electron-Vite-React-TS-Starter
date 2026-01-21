@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { formatItem } from "../helpers/ItemHelpers";
+import { Item, ItemDto } from '@common/item';
 
 export const useInventory = (itemStatusId?: string) => {
 	// const { pageNumber, searchTerm } = usePagination();
 
 	// const queryKeySearchTerm = '';
 	type InventoryResponse = {
-		items: Item[];
+		items: ItemDto[];
 		itemCount: number;
 	};
 
@@ -14,19 +15,26 @@ export const useInventory = (itemStatusId?: string) => {
 	//pagination: PaginationData | undefined;
 
 	const { data: itemResults, isLoading: loadingItems } = useQuery<{
-		items: Item[]
+		items: ItemDto[]
 	}>({
 		queryKey: ["inventory",],  //itemStatusId, pageNumber, searchTerm
 		staleTime: 0,
 		queryFn: async () => {
 
-			const promise = new Promise<Item[]>((resolve) => {
-				resolve([{ id: 0, description: 'item 1', createdOn: new Date() }])
-			});
+			const response = await window.electronAPI.getItems();
+			const data = response.data ?? [];
 
-			const response = await promise;
+			// const promise = new Promise<ItemDto[]>((resolve) => {
+			// 	resolve([{
+			// 		id: 0, description: 'item 1', created_at: 'null', itemTypeId: 1,
+			// 		hbcNumber: 'hbc', serialNumber: "123", itemType: 'computer',
+			// 		assignedToId: 1, itemStatusId: 1, initiativeId: 1
+			// 	}])
+			// });
 
-			return { items: response }
+			// const response = await promise;
+
+			return { items: data }
 
 			// const response = await agent.get<InventoryResponse>(
 			// 	`/inventory/items/${itemStatusId}`,

@@ -1,7 +1,7 @@
-type Item = {
+export type Item = {
     id: number
     description: string
-    createdOn: Date
+    created_at: string | null | undefined
     hbcNumber: string
     computerName?: string
     serialNumber: string
@@ -11,14 +11,44 @@ type Item = {
     cabinetOrRack?: string
     itemTypeId: number
     itemType: string
-    // initiativeId: number
+    initiativeId: number
     // initiative?: string
     // dateAssigned?: Date | null
-    // assignedToId?: number
+    assignedToId?: number
     // assignedTo?: string | null
     // assignedToEmail?: string | null
     // assignedToExtension?: string | null,
-    // itemStatusId: number,
+    itemStatusId: number,
+    // itemStatus: string,
+    // disposalDate: Date | null,
+    // kbmsId?: string,
+    // vendorId?: string,
+    // driverType?: string,
+    // sharedName?: string,
+}
+
+
+export type ItemDto = {
+    id: number
+    description: string
+    created_at: string
+    hbcNumber: string
+    computerName?: string
+    serialNumber: string
+    cubicle_Room?: string
+    ipAddress?: string
+    macAddress?: string
+    cabinetOrRack?: string
+    itemTypeId: number
+    itemType: string
+    initiativeId?: number
+    // initiative?: string
+    // dateAssigned?: Date | null
+    assignedToId?: number
+    // assignedTo?: string | null
+    // assignedToEmail?: string | null
+    // assignedToExtension?: string | null,
+    itemStatusId: number,
     // itemStatus: string,
     // disposalDate: Date | null,
     // kbmsId?: string,

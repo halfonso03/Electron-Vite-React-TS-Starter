@@ -8,21 +8,24 @@ import Form from '../../ui/Form';
 import FormRow from '../../ui/FormRow';
 import Select from '../../ui/Select';
 import Input from '../../ui/Input';
-import { useState, type ChangeEvent } from 'react';
-import { ItemTypes } from '../../api/data';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { formatDate } from 'date-fns';
 import { Box } from '../../ui/Box';
 import Button from '../../ui/Button';
 import Modal from '../../components/Modal';
-import type { AssigneeFormData } from '../../form-validation-schemas/personSchema';
-import useAssignments from '../../api-hooks/useAssignment';
-import toast from 'react-hot-toast';
-import { useInitiative } from '../../api-hooks/useInitiative';
-import PersonModal from '../person/PersonModal';
-import { AssigneeDto } from '@common/assignee';
+import type { AssigneeFormData } from '../../form-validation-schemas/assigneeSchema';
+// import useAssignments from '../../api-hooks/useAssignment';
+// import toast from 'react-hot-toast';
+// import { useInitiative } from '../../api-hooks/useInitiative';
+import AssigneeModal from '../assignee/AssigneeModal';
+import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
 import { InitiativeDto } from '@common/initiative';
+import { Item } from '@common/item';
+import { ItemTypes } from '@common/itemType';
 
 import useFetchDb from '../../api-hooks/useFetchDb';
+import useAssignments from '../../api-hooks/useAssignment';
+import toast from 'react-hot-toast';
 
 type Props = {
   item?: Item;
@@ -31,25 +34,20 @@ type Props = {
 };
 
 export default function ItemForm({ item, submit, toggleDisposal }: Props) {
-  const { data: assignees, loading: loadingAssignees } = useFetchDb<
-    AssigneeDto[]
-  >(window.electronAPI.getAssignees);
+  const { assignees } = useAssignments();
+  // const { initiatives } = useInitiative();
 
   const { data: initiatives } = useFetchDb<InitiativeDto[]>(
     window.electronAPI.getInitiatives,
   );
-  // const { createAssignee } = useAssignments();
+
+  const { createAssignee } = useAssignments();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newId, setNewId] = useState(0);
-  // const [assignees, setAssignees] = useState<AssigneeDto[] | null>(null);
 
   // if (item) {
   // 	console.log("item", item.itemTypeId);
   // }
-
-  console.log('assignees', assignees);
-
-  // console.log('assignees', assignees);
 
   const peopleOptions = assignees
     ? assignees?.map((p: AssigneeDto) => ({
@@ -119,34 +117,35 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
   }
 
   const onAddPerson = async (e: AssigneeFormData) => {
-    // await createAssignee.mutateAsync(e, {
-    // 	onSuccess: (addedAssignee: Person) => {
-    // 		toast.success("Assignee added and selected");
-    // 		setIsModalOpen(false);
-    // 		console.log("addedAssignee.id", addedAssignee.id);
-    // 		setNewId(addedAssignee.id);
-    // 	},
-    // });
+    await createAssignee.mutateAsync(e, {
+      onSuccess: (addedAssignee: AddAssigneeDto) => {
+        toast.success('Assignee added and selected');
+        setIsModalOpen(false);
+        setNewId(addedAssignee.id!);
+      },
+    });
   };
 
-  //   console.log('newId', newId);
+  useEffect(() => {
+    console.log('newId', newId);
 
-  //   // if (item && item?.id > 0) {
-  //   //   setValue('itemTypeId', item?.itemTypeId);
-  //   // }
+    if (item && item?.id > 0) {
+      setValue('itemTypeId', item?.itemTypeId);
+    }
 
-  // //   if (peopleOptions?.length > 0) {
-  // //     if (newId != 0) {
-  // //       setValue('assignedToId', newId);
-  // //     } else if (item?.assignedToId) {
-  // //       setValue('assignedToId', item.assignedToId);
-  // //     }
-  // //   }
+    if (peopleOptions?.length > 0) {
+      if (newId != 0) {
+        setValue('assignedToId', newId);
+      } else if (item?.assignedToId) {
+        setValue('assignedToId', item.assignedToId);
+      }
+    }
 
-  // //   if (initiativeOptions?.length > 0 && item?.initiativeId) {
-  // //     setValue('initiativeId', item.initiativeId);
-  // //   }
-  // }, [initiativeOptions?.length, item, newId, peopleOptions?.length, setValue]);
+    if (initiativeOptions?.length > 0 && item?.initiativeId) {
+      setValue('initiativeId', item.initiativeId);
+    }
+  }, [initiativeOptions?.length, item, newId, peopleOptions?.length, setValue]);
+
 
   if (!item) return;
 
@@ -313,7 +312,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                 }
               ></Input>
             </FormRow>
-            <FormRow label="KBMS ID" id="kbmsId">
+            {/* <FormRow label="KBMS ID" id="kbmsId">
               <Input
                 type="text"
                 id="kbmsId"
@@ -347,8 +346,8 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                   (errors?.driverType?.message ? ' error ' : '')
                 }
               ></Input>
-            </FormRow>
-            <FormRow label="Shared Name" id="sharedName">
+            </FormRow> */}
+            {/* <FormRow label="Shared Name" id="sharedName">
               <Input
                 type="text"
                 id="sharedName"
@@ -359,7 +358,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                   (errors?.sharedName?.message ? ' error ' : '')
                 }
               ></Input>
-            </FormRow>
+            </FormRow> */}
           </div>
           <div className="w-1/4 flex flex-col">
             {item.id != 0 && (
@@ -369,12 +368,12 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                   disabled={true}
                   id="dateCreated"
                   value={
-                    item.createdOn ? formatDate(item.createdOn, 'M/d/yy') : ''
+                    item.created_at ? formatDate(item.created_at, 'M/d/yy') : ''
                   }
                 ></Input>
               </FormRow>
             )}
-            <FormRow label="Date Assigned" id="dateAssigned">
+            {/* <FormRow label="Date Assigned" id="dateAssigned">
               <Input
                 type="text"
                 disabled={true}
@@ -397,13 +396,13 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                     : ''
                 }
               ></Input>
-            </FormRow>
+            </FormRow> */}
             {item.id != 0 && (
               <FormRow label="&nbsp;" id="" style={{ marginTop: 'auto' }}>
                 <Button
                   variation="danger"
                   type="button"
-                  className="w-[15rem]"
+                  className="w-15rem"
                   onClick={toggleDisposal}
                 >
                   {item.itemStatusId == 4
@@ -431,13 +430,13 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
           }}
           title="Add Assignee"
         >
-          <PersonModal
+          <AssigneeModal
             addPerson={onAddPerson}
             cancelModal={() => {
               setValue('assignedToId', 0);
               setIsModalOpen(false);
             }}
-          ></PersonModal>
+          ></AssigneeModal>
         </Modal>
       )}
     </div>

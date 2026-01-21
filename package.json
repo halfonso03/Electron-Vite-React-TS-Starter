@@ -54,6 +54,7 @@
     "@tanstack/react-query-devtools": "^5.91.2",
     "better-sqlite3": "^12.6.2",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "electron-squirrel-startup": "^1.0.1",

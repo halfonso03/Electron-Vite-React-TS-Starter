@@ -1,17 +1,16 @@
 import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
 import { AddInitiativeDto } from '@common/initiative';
-import { DataResponse, UserData, VoidResponse } from '@common/types';
-
+import { ItemDto } from '@common/item';
+import { ResultResponse, UserData, VoidResponse } from '@common/types';
 
 declare global {
     interface Window {
         electronAPI: {
-            getUser: (id: number) => Promise<ApiResponse<UserData>>;
-            insertUser: ({ name: string, email: string }) => Promise<ApiResponse<NoData>>;
-            addAssignee: (params: AddAssigneeDto) => Promise<VoidResponse>;
-            getAssignees: () => Promise<DataResponse<AssigneeDto[]>>
-            getInitiatives: () => Promise<DataResponse<Initiative[]>>
+            addAssignee: (params: AddAssigneeDto) => Promise<ResultResponse<AddAssigneeDto>>
+            getAssignees: () => Promise<ResultResponse<AssigneeDto[]>>
+            getInitiatives: () => Promise<ResultResponse<Initiative[]>>
             addInitiative: (params: AddInitiativeDto) => Promise<VoidResponse>
+            getItems: () => Promise<ResultResponse<ItemDto[]>>
             delete: () => Promise<VoidResponse>
         };
     }

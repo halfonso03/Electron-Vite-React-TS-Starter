@@ -4,6 +4,7 @@ import { Box } from '../../ui/Box';
 import { Pagination } from '../../ui/Pagination';
 import Table from '../../ui/Table';
 import ItemRow from '../items/ItemRow';
+import { ItemDto } from '@common/item';
 
 export default function InventoryList() {
   const searchTerm = '';
@@ -12,9 +13,6 @@ export default function InventoryList() {
   // const { setPageNumber, itemStatusFilter, searchTerm } = usePagination();
   const { itemResults } = useInventory(itemStatusFilter);
 
-  console.log('itemResults', itemResults)
-
-  const items: Item[] = [];
 
   function onSetPageNumber(pageNumber: number) {
     // setPageNumber(pageNumber);
@@ -24,8 +22,10 @@ export default function InventoryList() {
 
   // const paginationData = itemResults?.pagination;
 
-  // const items: Item[] | undefined = itemResults?.items;
+  const items: ItemDto[] | undefined = itemResults?.items;
 
+  console.log('items', items);
+  
   if (!items) return;
 
   return (
@@ -56,7 +56,7 @@ export default function InventoryList() {
         </Table.Header>
         <Table.Body
           data={items}
-          render={(item: Item) => (
+          render={(item: ItemDto) => (
             <ItemRow
               key={item.id}
               searchTerm={searchTerm}

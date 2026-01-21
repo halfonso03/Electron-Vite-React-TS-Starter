@@ -1,16 +1,10 @@
-export interface UserData {
-  id: number;
-  name: string;
-  email: string;
-}
-
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
 }
 
-export interface DataResponse<T> {
+export interface ResultResponse<T> {
   data?: T;
 }
 
@@ -21,4 +15,4 @@ export interface VoidResponse {
 
 export interface NoData { }
 
-export type asyncFn<T> = () => Promise<DataResponse<T>>;
+export type asyncFn<T> = () => Promise<ResultResponse<T>>;

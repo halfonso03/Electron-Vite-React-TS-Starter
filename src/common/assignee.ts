@@ -4,24 +4,25 @@ export enum AssigneeType {
 }
 
 
-export interface Assignee {
-    id: number
-    locationName?: string | undefined | null
-    firstName?: string | undefined | null
-    lastName?: string | undefined | null
-    email?: string | undefined | null
-    extension?: string | undefined | null
-    type: AssigneeType | number,
-    created_at: Date
-}
+// export interface Assignee {
+//     id: number
+//     locationName?: string | undefined | null
+//     firstName?: string | undefined | null
+//     lastName?: string | undefined | null
+//     email?: string | undefined | null
+//     extension?: string | undefined | null
+//     type: AssigneeType | number,
+//     created_at: Date
+// }
 
 export interface AddAssigneeDto {
+    id?: number
     locationName?: string | undefined | null
     firstName?: string | undefined | null
     lastName?: string | undefined | null
     email?: string | undefined | null
     extension?: string | undefined | null
-    type: AssigneeType | number
+    assigneeTypeId: AssigneeType | number
 }
 
 export interface AssigneeDto {
@@ -31,5 +32,5 @@ export interface AssigneeDto {
     lastName?: string | undefined | null
     email?: string | undefined | null
     extension?: string | undefined | null
-    type: AssigneeType | number
+    assigneeTypeId: AssigneeType | number
 }
