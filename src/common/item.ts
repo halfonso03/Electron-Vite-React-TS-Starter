@@ -29,7 +29,7 @@ export type Item = {
     // assignedToExtension?: string | null,
     itemStatusId: ItemStatus | number,
     // itemStatus: string,
-    // disposalDate: Date | null,
+    disposalDate?: Date | null,
     // kbmsId?: string,
     // vendorId?: string,
     // driverType?: string,
@@ -53,7 +53,7 @@ export type ItemDto = {
     initiativeId?: number | undefined | null
 
     // initiative?: string
-    // dateAssigned?: Date | null
+    assignedDate?: Date | null
     assignedToId?: number | undefined | null
 
     // assignedTo?: string | null
@@ -61,7 +61,7 @@ export type ItemDto = {
     // assignedToExtension?: string | null,
     itemStatusId: ItemStatus | number,
     itemStatus?: string,
-    // disposalDate: Date | null,
+    disposalDate?: Date | null,
     // kbmsId?: string,
     // vendorId?: string,
     // driverType?: string,
@@ -83,9 +83,12 @@ export type AddItemDto = {
     macAddress?: string | null | undefined
     cabinetOrRack?: string | null | undefined
     initiativeId?: number | undefined | null
-    // dateAssigned?: Date | null
+
+    assignedDate?: Date | null
+
     itemStatusId: ItemStatus | number,
-    // disposalDate: Date | null,
+    
+    disposalDate?: Date | null,
     // kbmsId?: string,
     // vendorId?: string,
     // driverType?: string,

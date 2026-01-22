@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('add-assignee', params);
   },
 
-  createInitiative: (params: AddInitiativeDto): Promise<VoidResponse> => {
+  createInitiative: (params: AddInitiativeDto): Promise<ResultResponse<number>> => {
     return ipcRenderer.invoke('add-initiative', params);
   },
 

@@ -4,7 +4,6 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AddItemDto, ItemDto, ItemStatus, UpdateItemDto } from "@common/item";
-import { number } from "yup";
 import { ItemTypes } from "@common/itemType";
 import { ItemFormData } from "../form-validation-schemas/itemSchema";
 
@@ -89,9 +88,9 @@ export const useItem = (id?: number) => {
             const response = await window.electronAPI.toggleDisposal(id);
             return { id: id, disposed: response.data } as { id: number, disposed: boolean | null };
         },
-        onSuccess: (response: { id: number, disposed: boolean | null }) => {
+        onSuccess: (result: { id: number, disposed: boolean | null }) => {
             queryClient.invalidateQueries(
-                { queryKey: ['items', id] });
+                { queryKey: ['items', result.id] });
         }
     })
 

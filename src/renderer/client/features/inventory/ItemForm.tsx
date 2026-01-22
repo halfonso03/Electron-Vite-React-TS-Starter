@@ -22,6 +22,13 @@ import { ItemTypes } from '@common/itemType';
 import useAssignments from '../../api-hooks/useAssignment';
 import toast from 'react-hot-toast';
 import { useInitiative } from '../../api-hooks/useInitiative';
+import { InitiativeDto } from '@common/initiative';
+import InitiativeModal from '../initiative/InitiativeModal';
+
+enum ModalOpened {
+  Assignee = 1,
+  Initiative = 2,
+}
 
 type Props = {
   item?: ItemDto;
@@ -31,12 +38,15 @@ type Props = {
 
 export default function ItemForm({ item, submit, toggleDisposal }: Props) {
   const { assignees } = useAssignments();
-  const { initiatives } = useInitiative();
+  const { initiatives, createInitiative } = useInitiative();
 
   const { createAssignee } = useAssignments();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newId, setNewId] = useState(0);
-
+  const [newAssigneeId, setNewAssigneeId] = useState(0);
+  const [newInitiativeId, setNewInitiativeId] = useState(0);
+  const [modalOpened, setModalOpened] = useState<ModalOpened>(
+    ModalOpened.Assignee,
+  );
 
   const peopleOptions = assignees
     ? assignees?.map((p: AssigneeDto) => ({
@@ -59,6 +69,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
 
   const initiativeOptions = [
     { value: '0', text: 'Unassigned' },
+    { value: '-1', text: 'Add Initiative' },
     ...(initiatives
       ? initiatives.map((i: Initiative) => ({
           value: i.id.toString(),
@@ -110,9 +121,22 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
       onSuccess: (addedAssignee: AddAssigneeDto) => {
         toast.success('Assignee added and selected');
         setIsModalOpen(false);
-        setNewId(addedAssignee.id!);
+        setNewAssigneeId(addedAssignee.id!);
       },
     });
+  };
+  
+  const onAddInitiative = async (e: { name: string }) => {
+    await createInitiative.mutateAsync(
+      { name: e.name },
+      {
+        onSuccess: (addedInitiative: InitiativeDto) => {
+          toast.success('Initiative added and selected');
+          setIsModalOpen(false);
+          setNewInitiativeId(addedInitiative.id!);
+        },
+      },
+    );
   };
 
   useEffect(() => {
@@ -121,17 +145,27 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
     }
 
     if (peopleOptions?.length > 0) {
-      if (newId != 0) {
-        setValue('assignedToId', newId);
+      if (newAssigneeId != 0) {
+        setValue('assignedToId', newAssigneeId);
       } else if (item?.assignedToId) {
         setValue('assignedToId', item.assignedToId);
       }
     }
 
-    if (initiativeOptions?.length > 0 && item?.initiativeId) {
-      setValue('initiativeId', item.initiativeId);
+    if (initiativeOptions?.length > 0) {
+      if (newInitiativeId != 0) {
+        setValue('initiativeId', newInitiativeId);
+      } else if (item?.initiativeId) {
+        setValue('initiativeId', item.initiativeId);
+      }
     }
-  }, [initiativeOptions?.length, item, newId, peopleOptions?.length, setValue]);
+  }, [
+    initiativeOptions?.length,
+    item,
+    newAssigneeId,
+    peopleOptions?.length,
+    setValue,
+  ]);
 
   if (!item) return;
 
@@ -258,6 +292,13 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                 id="initiativeId"
                 type="dark"
                 options={initiativeOptions}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                  const seletctedValue = +e.target.value;
+                  if (seletctedValue === -1) {
+                    setIsModalOpen(true);
+                    setModalOpened(ModalOpened.Initiative);
+                  }
+                }}
               ></Select>
             </FormRow>
             <FormRow
@@ -282,6 +323,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                   const seletctedValue = +e.target.value;
                   if (seletctedValue === -1) {
                     setIsModalOpen(true);
+                    setModalOpened(ModalOpened.Assignee);
                   }
                 }}
               ></Select>
@@ -385,7 +427,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
             </FormRow> */}
             {item.id != 0 && (
               <FormRow label="&nbsp;" id="" style={{ marginTop: 'auto' }}>
-                <Box className='w-full text-end'>
+                <Box className="w-full text-end">
                   <Button
                     variation="danger"
                     type="button"
@@ -418,13 +460,23 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
           }}
           title="Add Assignee"
         >
-          <AssigneeModal
-            addPerson={onAddPerson}
-            cancelModal={() => {
-              setValue('assignedToId', 0);
-              setIsModalOpen(false);
-            }}
-          ></AssigneeModal>
+          {modalOpened == ModalOpened.Assignee ? (
+            <AssigneeModal
+              addPerson={onAddPerson}
+              cancelModal={() => {
+                setValue('assignedToId', 0);
+                setIsModalOpen(false);
+              }}
+            ></AssigneeModal>
+          ) : (
+            <InitiativeModal
+              addInitiative={onAddInitiative}
+              cancelModal={() => {
+                setValue('initiativeId', 0);
+                setIsModalOpen(false);
+              }}
+            ></InitiativeModal>
+          )}
         </Modal>
       )}
     </div>

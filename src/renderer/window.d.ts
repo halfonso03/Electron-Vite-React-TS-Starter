@@ -8,7 +8,7 @@ declare global {
     interface Window {
         electronAPI: {
             getInitiatives: () => Promise<ResultResponse<Initiative[]>>
-            createInitiative: (params: AddInitiativeDto) => Promise<VoidResponse>
+            createInitiative: (params: AddInitiativeDto) => Promise<ResultResponse<number>>
             getAssignees: () => Promise<ResultResponse<AssigneeDto[]>>
             createAssignee: (params: AddAssigneeDto) => Promise<ResultResponse<AddAssigneeDto>>
             getItem: (params: number) => Promise<ResultResponse<ItemDto>>

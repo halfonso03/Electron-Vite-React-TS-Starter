@@ -1,6 +1,6 @@
 import { defaultItem, ItemStatus, UpdateItemDto } from './../common/item';
 import { ItemDto } from '@common/item';
-import { InitiativeDto } from './../common/initiative';
+import { AddInitiativeDto, InitiativeDto } from './../common/initiative';
 import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
 import { ResultResponse, VoidResponse } from "@common/types";
 import { ipcMain } from "electron";
@@ -8,8 +8,6 @@ import { db } from "./drizzle";
 import { AssigneeTable, InitiativeTable, ItemTable } from "./drizzle/schema";
 import { asc, desc, eq, sql } from 'drizzle-orm';
 import { formatInTimeZone } from 'date-fns-tz';
-import { boolean } from 'drizzle-orm/gel-core';
-import { report } from 'node:process';
 
 const ItemTypes: { value: string; text: string }[] = [
     { value: '1', text: 'Desktop' },
@@ -55,8 +53,6 @@ export default function setUpHandlers() {
         const results = await db.insert(AssigneeTable).values(params).returning({ insertedId: AssigneeTable.id });
         const newId = results[0].insertedId;
 
-        console.log('newId', newId)
-
         params.id = newId;
 
         return {
@@ -65,12 +61,13 @@ export default function setUpHandlers() {
     });
 
 
-    ipcMain.handle('add-initiative', async (_, params): Promise<VoidResponse> => {
+    ipcMain.handle('add-initiative', async (_, params: AddInitiativeDto): Promise<ResultResponse<number>> => {
 
-        await db.insert(InitiativeTable).values(params);
+        const results = await db.insert(InitiativeTable).values(params).returning({ insertedId: InitiativeTable.id });
+        const newId = results[0].insertedId;
 
         return {
-            success: true,
+            data: newId
         };
     });
 
@@ -142,7 +139,7 @@ export default function setUpHandlers() {
 
         const updateItemDto = params as UpdateItemDto;
 
-        const response = await db.update(ItemTable)
+        await db.update(ItemTable)
             .set({
                 itemTypeId: updateItemDto.itemTypeId,
                 hbcNumber: updateItemDto.hbcNumber,

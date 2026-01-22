@@ -25,7 +25,7 @@ export default function AddItem() {
     itemType: '',
     itemStatusId: 1,
     itemStatus: '',
-    // disposalDate: null,
+    disposalDate: null,    
   };
 
   function onSubmit(item: ItemFormData) {
