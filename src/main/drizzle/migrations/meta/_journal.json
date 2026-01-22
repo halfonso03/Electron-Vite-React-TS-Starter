@@ -43,6 +43,13 @@
       "when": 1769029091677,
       "tag": "0005_hard_kat_farrell",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1769097292480,
+      "tag": "0006_regular_mulholland_black",
+      "breakpoints": true
     }
   ]
 }

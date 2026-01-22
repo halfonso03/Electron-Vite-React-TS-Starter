@@ -1,4 +1,4 @@
-import { AddItemDto, ItemDto } from '@common/item';
+import { AddItemDto, ItemDto, UpdateItemDto } from '@common/item';
 import { AddInitiativeDto, InitiativeDto } from '@common/initiative';
 import { contextBridge, ipcRenderer } from 'electron';
 import { ResultResponse, VoidResponse } from '@common/types';
@@ -28,8 +28,21 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('add-initiative', params);
   },
 
+  getItem: (params: number): Promise<ResultResponse<ItemDto>> => {
+    return ipcRenderer.invoke('get-item', params);
+  },
+
+
   createItem: (params: AddItemDto): Promise<ResultResponse<AddItemDto>> => {
     return ipcRenderer.invoke('add-item', params);
+  },
+
+  updateItem: (params: UpdateItemDto): Promise<ResultResponse<ItemDto>> => {
+    return ipcRenderer.invoke('update-item', params);
+  },
+
+  toggleDisposal: (params: number): Promise<ResultResponse<boolean | null>> => {
+    return ipcRenderer.invoke('toggle-disposal', params);
   },
 
   // this deletes all data!!

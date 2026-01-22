@@ -3,24 +3,25 @@ import { Box } from '../../ui/Box';
 import ButtonText from '../../ui/ButtonText';
 import ItemForm from './ItemForm';
 import { useItem } from '../../api-hooks/useItem';
+import toast from 'react-hot-toast';
 
 export default function UpdateItem() {
   const params = useParams();
   const id = params!.id!;
   const navigate = useNavigate();
-  // const { item, updateItem, toggleDisposal } = useItem(+id);
 
-  console.log('id', id);
+  const { item, updateItem, toggleDisposal } = useItem(+id);
+
   async function onToggleDisposal() {
-    // await toggleDisposal.mutateAsync(item!.id, {
-    //   onSuccess: (item) => {
-    //     if (item.disposalDate) {
-    //       toast.success('Item moved to disposal');
-    //     } else {
-    //       toast.success('Item moved out of disposal');
-    //     }
-    //   },
-    // });
+    await toggleDisposal.mutateAsync(item!.id, {
+      onSuccess: (result: { id: number; disposed: boolean | null }) => {
+        if (result.disposed) {
+          toast.success('Item moved to disposal');
+        } else {
+          toast.success('Item moved out of disposal');
+        }
+      },
+    });
   }
 
   return (
@@ -31,11 +32,11 @@ export default function UpdateItem() {
         </ButtonText>
       </Box>
       <span>Update item</span>
-      {/* <ItemForm
+      <ItemForm
         item={item}
         submit={updateItem}
         toggleDisposal={onToggleDisposal}
-      ></ItemForm> */}
+      ></ItemForm>
     </>
   );
 }

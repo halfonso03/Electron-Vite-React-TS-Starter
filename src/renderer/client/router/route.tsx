@@ -17,8 +17,6 @@ export const router = createBrowserRouter([
       //   { path: 'person/:id', element: <PersonDetails /> },
       //   {
       //     path: '/trips',
-      //     element: <TravelList></TravelList>,
-      //   { path: '/trips/new', element: <CreateTrip></CreateTrip> },
       //   { path: '/server-error', element: <ServerError /> },
 
       //   {

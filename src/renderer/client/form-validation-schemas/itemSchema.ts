@@ -42,7 +42,7 @@ export interface ItemFormData {
 
 export const itemFormSchema = Yup.object().shape({
     id: Yup.number().required("*"),
-    description: Yup.string().required('*'),
+    description: Yup.string().nullable().required('*'),
     itemTypeId: Yup.mixed().not(['0', 0, ''], "*"),
     hbcNumber: Yup.string().required('*'),
     computerName: Yup.string().when('itemTypeId', {

@@ -1,3 +1,4 @@
+import { defaultItem, ItemStatus, UpdateItemDto } from './../common/item';
 import { ItemDto } from '@common/item';
 import { InitiativeDto } from './../common/initiative';
 import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
@@ -5,27 +6,35 @@ import { ResultResponse, VoidResponse } from "@common/types";
 import { ipcMain } from "electron";
 import { db } from "./drizzle";
 import { AssigneeTable, InitiativeTable, ItemTable } from "./drizzle/schema";
-import { asc, desc } from 'drizzle-orm';
+import { asc, desc, eq, sql } from 'drizzle-orm';
 import { formatInTimeZone } from 'date-fns-tz';
+import { boolean } from 'drizzle-orm/gel-core';
+import { report } from 'node:process';
 
+const ItemTypes: { value: string; text: string }[] = [
+    { value: '1', text: 'Desktop' },
+    { value: '2', text: 'Server' },
+    { value: '3', text: 'Switch' },
+    { value: '4', text: 'Monitor' },
+    { value: '5', text: 'Printer' },
+    { value: '6', text: 'MobilePhone' },
+    { value: '7', text: 'Misc' },
+];
 export default function setUpHandlers() {
 
     ipcMain.handle('get-assignees', async (): Promise<ResultResponse<AssigneeDto[]>> => {
 
         const response = await db.select().from(AssigneeTable).orderBy(asc(AssigneeTable.lastName), desc(AssigneeTable.lastName))
 
-        const assignees: AssigneeDto[] = response.map(a => {
-
-            return {
-                id: a.id,
-                firstName: a.firstName,
-                lastName: a.lastName,
-                email: a.email,
-                locationName: a.locationName,
-                extension: a.extension,
-                assigneeTypeId: a.assigneeTypeId
-            }
-        });
+        const assignees: AssigneeDto[] = response.map(a => ({
+            id: a.id,
+            firstName: a.firstName,
+            lastName: a.lastName,
+            email: a.email,
+            locationName: a.locationName,
+            extension: a.extension,
+            assigneeTypeId: a.assigneeTypeId
+        }));
 
         return {
             data: assignees
@@ -83,11 +92,11 @@ export default function setUpHandlers() {
                 macAddress: i.macAddress,
                 cabinetOrRack: i.cabinetOrRack,
                 itemTypeId: i.itemTypeId,
-                itemType: '',
                 assignedToId: i.assignedToId as number | undefined,
                 initiativeId: i.initiativeId as number | undefined,
                 itemStatusId: i.itemStatusId,
-                itemStatus: getItemStatusText(i.itemStatusId)
+                itemStatus: getItemStatusText(i.itemStatusId),
+                itemType: ItemTypes.filter(x => x.value === i.itemTypeId.toString()).at(0)?.text ?? '',
             };
             return item;
         });
@@ -97,6 +106,23 @@ export default function setUpHandlers() {
             data: items
         };
     });
+
+    ipcMain.handle('get-item', async (_, params): Promise<ResultResponse<ItemDto>> => {
+
+        const response = (await db.select().from(ItemTable).where(eq(ItemTable.id, params))).at(0)
+
+        let item: ItemDto = defaultItem;
+
+        if (response) {
+            item = { ...response, id: response?.id! };
+        }
+        console.log('get-item params', item)
+
+        return {
+            data: item,
+        };
+    });
+
 
     ipcMain.handle('add-item', async (_, params): Promise<ResultResponse<ItemDto[]>> => {
 
@@ -112,11 +138,61 @@ export default function setUpHandlers() {
         };
     });
 
+    ipcMain.handle('update-item', async (_, params): Promise<ResultResponse<ItemDto[]>> => {
+
+        const updateItemDto = params as UpdateItemDto;
+
+        const response = await db.update(ItemTable)
+            .set({
+                itemTypeId: updateItemDto.itemTypeId,
+                hbcNumber: updateItemDto.hbcNumber,
+                serialNumber: updateItemDto.serialNumber ?? undefined,
+                description: updateItemDto.description,
+                computerName: updateItemDto.computerName,
+                ipAddress: updateItemDto.ipAddress ?? undefined,
+                macAddress: updateItemDto.macAddress ?? undefined,
+                cubicle_Room: updateItemDto.cubicle_Room ?? undefined,
+                cabinetOrRack: updateItemDto.cabinetOrRack ?? undefined,
+                initiativeId: updateItemDto.initiativeId,
+                assignedToId: updateItemDto.assignedToId
+            })
+            .where(eq(ItemTable.id, updateItemDto.id!));
+
+        return {
+            data: params,
+        };
+    });
+
+    ipcMain.handle('toggle-disposal', async (_, params): Promise<ResultResponse<boolean | null>> => {
+
+        const item = (await db.select().from(ItemTable).where(eq(ItemTable.id, params))).at(0)
+
+        if (item) {
+
+            await db.update(ItemTable)
+                .set({
+                    itemStatusId: item.disposalDate ? ItemStatus.Unassigned : ItemStatus.Disposed,
+                    disposalDate: item.disposalDate ? null : sql`(CURRENT_TIMESTAMP)`,
+                    assignedToId: null,
+                    assignedDate: null
+                })
+                .where(eq(ItemTable.id, params));
+
+
+            // return new disposal true if disposed, false if not
+
+            return {
+                data: !!!item.disposalDate
+            };
+        }
+
+        return {
+            data: null
+        };
+    });
 
     ipcMain.handle('delete', async (): Promise<VoidResponse> => {
 
-        await db.delete(AssigneeTable);
-        await db.delete(InitiativeTable);
         await db.delete(ItemTable);
 
         return {

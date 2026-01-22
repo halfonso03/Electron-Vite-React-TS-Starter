@@ -13,7 +13,6 @@ export default function InventoryList() {
   // const { setPageNumber, itemStatusFilter, searchTerm } = usePagination();
   const { itemResults } = useInventory(itemStatusFilter);
 
-
   function onSetPageNumber(pageNumber: number) {
     // setPageNumber(pageNumber);
   }
@@ -24,8 +23,6 @@ export default function InventoryList() {
 
   const items: ItemDto[] | undefined = itemResults?.items;
 
-  console.log('items', items);
-  
   if (!items) return;
 
   return (
@@ -36,20 +33,20 @@ export default function InventoryList() {
 
       <Table columns=".1fr .12fr .25fr .25fr .25fr .1fr .16fr .2fr .14fr .17fr .14fr ">
         <Table.Header>
-          <Table.Cell className="font-semibold">HBC #</Table.Cell>
-          <Table.Cell className="font-semibold">Type</Table.Cell>
-          <Table.Cell className="font-semibold">Serial Number</Table.Cell>
-          <Table.Cell className="font-semibold">Description</Table.Cell>
-          <Table.Cell className="font-semibold">Computer Name</Table.Cell>
-          <Table.Cell className="font-semibold">Initiative</Table.Cell>
-          <Table.Cell className="font-semibold" align="center">
+          <Table.Cell className="font-bold">HBC #</Table.Cell>
+          <Table.Cell className="font-bold">Type</Table.Cell>
+          <Table.Cell className="font-bold">Serial Number</Table.Cell>
+          <Table.Cell className="font-bold">Description</Table.Cell>
+          <Table.Cell className="font-bold">Computer Name</Table.Cell>
+          <Table.Cell className="font-bold">Initiative</Table.Cell>
+          <Table.Cell className="font-bold" align="center">
             Cubicle/Room
           </Table.Cell>
-          {/* <Table.Cell className="font-semibold">Date Assigned</Table.Cell> */}
-          <Table.Cell className="font-semibold">Assigned User</Table.Cell>
-          <Table.Cell className="font-semibold">IP Address</Table.Cell>
-          <Table.Cell className="font-semibold">MAC Address</Table.Cell>
-          <Table.Cell className="font-semibold">Cabinet/Rack</Table.Cell>
+          {/* <Table.Cell className="font-bold">Date Assigned</Table.Cell> */}
+          <Table.Cell className="font-bold">Assigned User</Table.Cell>
+          <Table.Cell className="font-bold">IP Address</Table.Cell>
+          <Table.Cell className="font-bold">MAC Address</Table.Cell>
+          <Table.Cell className="font-bold">Cabinet/Rack</Table.Cell>
           {/* <Table.Cell className="font-semibold" align="center">
           Status
         </Table.Cell> */}

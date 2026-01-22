@@ -63,5 +63,10 @@ export const ItemTable = sqliteTable("Item", {
 
     itemStatusId: integer("itemStatusId").notNull(),
 
+    disposalDate: text("disposalDate"),
+
+    assignedDate: text("assignedDate"),
+
+
 });
 

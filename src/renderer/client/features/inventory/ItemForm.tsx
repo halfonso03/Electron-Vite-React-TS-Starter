@@ -37,9 +37,6 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newId, setNewId] = useState(0);
 
-  // if (item) {
-  // 	console.log("item", item.itemTypeId);
-  // }
 
   const peopleOptions = assignees
     ? assignees?.map((p: AssigneeDto) => ({
@@ -83,10 +80,10 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
     defaultValues: {
       id: item?.id,
       serialNumber: item?.serialNumber,
-      description: item?.description,
-      computerName: item?.computerName,
-      hbcNumber: item?.hbcNumber,
-      assignedToId: item?.assignedToId,
+      description: item?.description ?? undefined,
+      computerName: item?.computerName ?? undefined,
+      hbcNumber: item?.hbcNumber ?? undefined,
+      assignedToId: item?.assignedToId ?? 0,
       ipAddress: item?.ipAddress,
       initiativeId: item?.initiativeId,
       cubicle_Room: item?.cubicle_Room,
@@ -185,7 +182,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="hbcNumber"
-                defaultValue={item.hbcNumber}
+                defaultValue={item.hbcNumber ?? undefined}
                 className={
                   ' form-element ' +
                   (errors?.hbcNumber?.message ? ' error ' : '')
@@ -201,7 +198,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="serialNumber"
-                defaultValue={item.serialNumber ?? ''}
+                defaultValue={item.serialNumber ?? undefined}
                 {...register('serialNumber')}
               ></Input>
             </FormRow>
@@ -213,7 +210,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="description"
-                defaultValue={item.description}
+                defaultValue={item.description ?? undefined}
                 {...register('description')}
                 className={
                   ' form-element ' +
@@ -229,7 +226,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="location"
-                defaultValue={item.computerName ?? ''}
+                defaultValue={item.computerName ?? undefined}
                 {...register('computerName')}
                 className={
                   ' form-element ' +
@@ -271,7 +268,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="cubicle_Room"
-                defaultValue={item.cubicle_Room ?? ''}
+                defaultValue={item.cubicle_Room ?? undefined}
                 {...register('cubicle_Room')}
               ></Input>
             </FormRow>
@@ -388,16 +385,18 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
             </FormRow> */}
             {item.id != 0 && (
               <FormRow label="&nbsp;" id="" style={{ marginTop: 'auto' }}>
-                <Button
-                  variation="danger"
-                  type="button"
-                  className="w-15rem"
-                  onClick={toggleDisposal}
-                >
-                  {item.itemStatusId == 4
-                    ? 'Remove from Disposal'
-                    : 'Move to Disposal'}
-                </Button>
+                <Box className='w-full text-end'>
+                  <Button
+                    variation="danger"
+                    type="button"
+                    className="w-15rem"
+                    onClick={toggleDisposal}
+                  >
+                    {item.itemStatusId == 4
+                      ? 'Remove from Disposal'
+                      : 'Move to Disposal'}
+                  </Button>
+                </Box>
               </FormRow>
             )}
           </div>
