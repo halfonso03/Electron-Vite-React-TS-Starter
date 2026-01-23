@@ -1,5 +1,6 @@
 // import { usePagination } from "../../app/contexts/usePagination";
 import { useInventory } from '../../api-hooks/useInventory';
+import { usePagination } from '../../contexts/usePagination';
 import { Box } from '../../ui/Box';
 import { Pagination } from '../../ui/Pagination';
 import Table from '../../ui/Table';
@@ -7,10 +8,8 @@ import ItemRow from '../items/ItemRow';
 import { ItemDto } from '@common/item';
 
 export default function InventoryList() {
-  const searchTerm = '';
-  const itemStatusFilter = '1';
 
-  // const { setPageNumber, itemStatusFilter, searchTerm } = usePagination();
+  const { setPageNumber, itemStatusFilter, searchTerm } = usePagination();
   const { itemResults } = useInventory(itemStatusFilter);
 
   function onSetPageNumber(pageNumber: number) {

@@ -27,6 +27,8 @@ export const useItem = (id?: number) => {
 
             const itemStatus = !itemFormData.assignedToId ? ItemStatus.Unassigned : ItemStatus.Assigned;
 
+            console.log('itemStatus', itemStatus)
+
             const itemToAdd: AddItemDto = {
                 ...itemFormData,
                 itemStatusId: itemStatus,
@@ -56,11 +58,11 @@ export const useItem = (id?: number) => {
     const { mutate: updateItem, isPending: isUpdating, isSuccess: updated } = useMutation({
         mutationFn: async (itemFormData: ItemFormData) => {
 
-            const itemStatus = !itemFormData.assignedToId ? ItemStatus.Unassigned : ItemStatus.Assigned;
+            const itemStatusId = !itemFormData.assignedToId ? ItemStatus.Unassigned : ItemStatus.Assigned;
 
             const itemToUpdate: UpdateItemDto = {
                 ...itemFormData,
-                itemStatusId: itemStatus,
+                itemStatusId: itemStatusId,
                 itemTypeId: itemFormData.itemTypeId as number,
             }
 
@@ -68,7 +70,7 @@ export const useItem = (id?: number) => {
 
             const item: ItemDto = {
                 ...itemToUpdate,
-                itemStatus: itemStatus == ItemStatus.Unassigned ? 'Unassiged' : 'Assigned',
+                itemStatus: itemStatusId == ItemStatus.Unassigned ? 'Unassiged' : 'Assigned',
                 itemType: ItemTypes.filter(i => i.value == itemToUpdate.itemTypeId.toString()).at(0)?.text!,
                 id: response.data?.id!,
                 created_at: response.data?.created_at!
@@ -89,6 +91,7 @@ export const useItem = (id?: number) => {
             return { id: id, disposed: response.data } as { id: number, disposed: boolean | null };
         },
         onSuccess: (result: { id: number, disposed: boolean | null }) => {
+            console.log('result.id', result.id)
             queryClient.invalidateQueries(
                 { queryKey: ['items', result.id] });
         }

@@ -19,3 +19,9 @@ npm rebuild better-sqlite3
 npx drizzle-kit migrate 
 npm run rebuild
 
+
+
+electron
+react
+sqlite
+drizzle orm

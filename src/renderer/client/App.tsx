@@ -4,7 +4,8 @@ import Header from './ui/Header';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
-import Button from './ui/Button';
+import { PaginationContextProvider } from './contexts/PaginationContextProvider';
+import { ItemTypes } from '@common/itemType';
 
 const StyledOutlet = styled.div`
   background-color: var(--color-gray-900);
@@ -18,18 +19,22 @@ const StyledContainer = styled.div`
 export default function App() {
   const queryClient = new QueryClient();
 
+  window.electronAPI.populateDatabase(ItemTypes);
+
   return (
     <QueryClientProvider client={queryClient}>
       <StyledContainer className="w-full">
         <Header>
           <Link to={'/'}>MTF Inventory</Link>
         </Header>
-        <StyledOutlet>
-          <Button variation="secondary" onClick={window.electronAPI.delete}>
-            Delete All
-          </Button>
-          <Outlet></Outlet>
-        </StyledOutlet>
+        <PaginationContextProvider>
+          <StyledOutlet>
+            {/* <Button variation="secondary" onClick={window.electronAPI.delete}>
+              Delete All
+            </Button> */}
+            <Outlet></Outlet>
+          </StyledOutlet>
+        </PaginationContextProvider>
       </StyledContainer>
       <Toaster
         gutter={12}

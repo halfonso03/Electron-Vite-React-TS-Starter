@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { formatItem } from "../helpers/ItemHelpers";
 import { ItemDto } from '@common/item';
+import { usePagination } from '../contexts/usePagination';
 
 export const useInventory = (itemStatusId?: string) => {
-	// const { pageNumber, searchTerm } = usePagination();
+	const { searchTerm } = usePagination(); //pageNumber
 
 	// const queryKeySearchTerm = '';
 	//pagination: PaginationData | undefined;
@@ -11,11 +12,11 @@ export const useInventory = (itemStatusId?: string) => {
 	const { data: itemResults, isLoading: loadingItems } = useQuery<{
 		items: ItemDto[]
 	}>({
-		queryKey: ["inventory",],  //itemStatusId, pageNumber, searchTerm
+		queryKey: ["inventory", itemStatusId, searchTerm],  //, pageNumber, searchTerm
 		staleTime: 0,
 		queryFn: async () => {
 
-			const response = await window.electronAPI.getItems();
+			const response = await window.electronAPI.getItems({ itemStatusId: itemStatusId ?? "", searchTerm: searchTerm });
 			const data = response.data ?? [];
 
 			return { items: data }

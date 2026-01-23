@@ -3,15 +3,11 @@ import Button from '../../ui/Button';
 import { Box } from '../../ui/Box';
 import InventoryFilters from './InventoryFilters';
 import InventoryList from './InventoryList';
-import { AssigneeType } from '@common/assignee';
+import { usePagination } from '../../contexts/usePagination';
 
 export default function Inventory() {
   const navigate = useNavigate();
-
-  //   const { setItemStatusFilter, itemStatusFilter } = usePagination();
-
-  const itemStatusFilter = '';
-  const setItemStatusFilter = () => {};
+  const { setItemStatusFilter2, itemStatusFilter } = usePagination();
 
   return (
     <>
@@ -24,11 +20,10 @@ export default function Inventory() {
           Add Inventory Item
         </Button>
       </div>
-
       <Box className="flex">
         <InventoryFilters
           itemStatusFilter={itemStatusFilter}
-          setItemStatusFilter={setItemStatusFilter}
+          setItemStatusFilter={setItemStatusFilter2}
         ></InventoryFilters>
       </Box>
       <InventoryList></InventoryList>

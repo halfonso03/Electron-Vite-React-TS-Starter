@@ -1,3 +1,5 @@
+import Search from '../../components/Search';
+import { usePagination } from '../../contexts/usePagination';
 import Button from '../../ui/Button';
 
 type Props = {
@@ -9,7 +11,7 @@ export default function InventoryFilters({
   itemStatusFilter,
   setItemStatusFilter,
 }: Props) {
-  // const { setSearchTerm, setPageNumber } = usePagination();
+  const { setSearchTerm } = usePagination(); //setPageNumber
 
   function filterButtonClick(itemStatus: string) {
     setItemStatusFilter(itemStatus);
@@ -17,7 +19,7 @@ export default function InventoryFilters({
   }
 
   function onSearch(searchTerm: string) {
-    // setSearchTerm(searchTerm);
+    setSearchTerm(searchTerm);
     // setPageNumber(1);
   }
 
@@ -49,14 +51,14 @@ export default function InventoryFilters({
         >
           Unassigned
         </Button>
-        <Button
+        {/* <Button
           variation="secondary"
           className="self-start"
           selected={itemStatusFilter === '3'}
           onClick={() => filterButtonClick('3')}
         >
-          TDB
-        </Button>
+          TBD
+        </Button> */}
         <Button
           variation="secondary"
           className="self-start"
@@ -67,9 +69,7 @@ export default function InventoryFilters({
         </Button>
       </div>
       <div className="w-1/4">
-        {/* <Search
-					onSearch={(searchTerm: string) => onSearch(searchTerm)}
-				/> */}
+        <Search onSearch={(searchTerm: string) => onSearch(searchTerm)} />
       </div>
     </div>
   );

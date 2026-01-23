@@ -32,6 +32,12 @@ export const InitiativeTable = sqliteTable("Initiative", {
 });
 
 
+export const ItemTypeTable = sqliteTable("ItemType", {
+
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: false }),
+
+    name: text("name").notNull(),
+});
 
 export const ItemTable = sqliteTable("Item", {
 
@@ -55,7 +61,7 @@ export const ItemTable = sqliteTable("Item", {
 
     cabinetOrRack: text("cabinetOrRack"),
 
-    itemTypeId: integer("itemTypeId").notNull(),
+    itemTypeId: integer("itemTypeId").notNull().references(() => ItemTypeTable.id),
 
     initiativeId: integer("initiativeId").references(() => InitiativeTable.id),
 

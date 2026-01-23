@@ -1,8 +1,8 @@
 import { HiMagnifyingGlass, HiXMark } from 'react-icons/hi2';
 import Input from '../ui/Input';
 import React, { useRef } from 'react';
-import { usePagination } from '../app/contexts/usePagination';
 import Button from '../ui/Button';
+import { usePagination } from '../contexts/usePagination';
 
 type Props = {
   onSearch: (searchTerm: string) => void;

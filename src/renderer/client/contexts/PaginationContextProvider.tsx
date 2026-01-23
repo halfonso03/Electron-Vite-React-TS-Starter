@@ -6,7 +6,7 @@ export interface PaginationContextType {
   itemStatusFilter: string;
   searchTerm: string;
   setPageNumber: (pageNumber: number) => void;
-  setItemStatusFilter: (itemStatus: string) => void;
+  setItemStatusFilter2: (itemStatus: string) => void;
   setSearchTerm: (searchTerm: string) => void;
 }
 
@@ -21,12 +21,17 @@ export const PaginationContextProvider = ({
   const [itemStatusFilter, setItemStatusFilter] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  function setItemStatusFilter2(itemStatus: string) {
+
+    setItemStatusFilter(itemStatus);
+  }
+
   const contextValue: PaginationContextType = {
     pageNumber,
     setPageNumber,
     itemStatusFilter,
     searchTerm,
-    setItemStatusFilter,
+    setItemStatusFilter2,
     setSearchTerm,
   };
 

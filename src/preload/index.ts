@@ -16,8 +16,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('get-initiatives');
   },
 
-  getItems: (): Promise<ResultResponse<ItemDto[]>> => {
-    return ipcRenderer.invoke('get-items');
+  getItems: (params: { itemStatusId: string, searchTerm: string }): Promise<ResultResponse<ItemDto[]>> => {
+    return ipcRenderer.invoke('get-items', params);
   },
 
   createAssignee: (params: AddAssigneeDto): Promise<ResultResponse<AddAssigneeDto>> => {
@@ -31,7 +31,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getItem: (params: number): Promise<ResultResponse<ItemDto>> => {
     return ipcRenderer.invoke('get-item', params);
   },
-
 
   createItem: (params: AddItemDto): Promise<ResultResponse<AddItemDto>> => {
     return ipcRenderer.invoke('add-item', params);
@@ -48,6 +47,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // this deletes all data!!
   delete: (): Promise<VoidResponse> => {
     return ipcRenderer.invoke('delete');
+  },
+
+  populateDatabase: (params: { value: string, text: string }[]): Promise<VoidResponse> => {
+    return ipcRenderer.invoke('populate-database', params)
   }
 
 });

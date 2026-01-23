@@ -1,23 +1,15 @@
-import { defaultItem, ItemStatus, UpdateItemDto } from './../common/item';
-import { ItemDto } from '@common/item';
-import { AddInitiativeDto, InitiativeDto } from './../common/initiative';
+import { ItemTypes } from './../common/itemType';
+import { ItemDto, ItemStatus, defaultItem, UpdateItemDto } from '@common/item';
+import { AddInitiativeDto, InitiativeDto } from '@common/initiative';
 import { AddAssigneeDto, AssigneeDto, AssigneeType } from '@common/assignee';
 import { ResultResponse, VoidResponse } from "@common/types";
 import { ipcMain } from "electron";
 import { db } from "./drizzle";
-import { AssigneeTable, InitiativeTable, ItemTable } from "./drizzle/schema";
-import { asc, eq, sql } from 'drizzle-orm';
+import { AssigneeTable, InitiativeTable, ItemTable, ItemTypeTable } from "./drizzle/schema";
+import { and, asc, eq, like, or, SQL, sql } from 'drizzle-orm';
 import { formatInTimeZone } from 'date-fns-tz';
 
-const ItemTypes: { value: string; text: string }[] = [
-    { value: '1', text: 'Desktop' },
-    { value: '2', text: 'Server' },
-    { value: '3', text: 'Switch' },
-    { value: '4', text: 'Monitor' },
-    { value: '5', text: 'Printer' },
-    { value: '6', text: 'MobilePhone' },
-    { value: '7', text: 'Misc' },
-];
+
 export default function setUpHandlers() {
 
     ipcMain.handle('get-assignees', async (): Promise<ResultResponse<AssigneeDto[]>> => {
@@ -73,14 +65,12 @@ export default function setUpHandlers() {
         };
     });
 
-
     ipcMain.handle('add-initiative', async (_, params: AddInitiativeDto): Promise<ResultResponse<number>> => {
 
         const existingInitiative = await db
             .select()
             .from(InitiativeTable)
             .where(eq(sql<string>`lower(${InitiativeTable.name})`, params.name.trim().toLowerCase()))
-
 
         if (existingInitiative.length === 0) {
             const results = await db.insert(InitiativeTable).values(params).returning({ insertedId: InitiativeTable.id });
@@ -96,19 +86,51 @@ export default function setUpHandlers() {
         };
     });
 
-    ipcMain.handle('get-items', async (): Promise<ResultResponse<ItemDto[]>> => {
+    ipcMain.handle('get-items', async (_, { itemStatusId, searchTerm }): Promise<ResultResponse<ItemDto[]>> => {
+        // sql<string>`lower(${InitiativeTable.name})`, params.name.trim().toLowerCase())
 
-        const response = await db
+        const filters: SQL[] = [];
+
+        let qry = db
             .select({
                 items: ItemTable,
                 assignee: AssigneeTable,
                 initiative: InitiativeTable
             })
             .from(ItemTable)
+            .innerJoin(ItemTypeTable, eq(ItemTable.itemTypeId, ItemTypeTable.id))
             .leftJoin(AssigneeTable, eq(ItemTable.assignedToId, AssigneeTable.id))
-            .leftJoin(InitiativeTable, eq(ItemTable.initiativeId, InitiativeTable.id));
+            .leftJoin(InitiativeTable, eq(ItemTable.initiativeId, InitiativeTable.id))
 
-        const items: ItemDto[] = response.map(i => {
+        if (typeof itemStatusId == 'string' && itemStatusId) {
+            filters.push(eq(ItemTable.itemStatusId, +itemStatusId));
+        }
+
+        if (typeof searchTerm == 'string' && searchTerm) {
+            let searchFilter =
+                or(like(sql`lower(${ItemTable.computerName})`, `%${searchTerm.toLowerCase()}%`),
+                    like(sql`lower(${ItemTable.description})`, `%${searchTerm.toLowerCase()}%`),
+                    like(sql`lower(${ItemTable.hbcNumber})`, `%${searchTerm.toLowerCase()}%`),
+                    like(sql`lower(${ItemTable.serialNumber})`, `%${searchTerm.toLowerCase()}%`),
+                    like(sql`lower(${ItemTable.ipAddress})`, `%${searchTerm.toLowerCase()}%`),
+                    like(sql`lower(${ItemTypeTable.name})`, `%${searchTerm.toLowerCase()}%`),
+                    like(sql`lower(${ItemTable.cubicle_Room})`, `%${searchTerm.toLowerCase()}%`),
+                    like(sql`lower(${AssigneeTable.firstName})`, `%${searchTerm.toLowerCase()}%`),
+                    like(sql`lower(${AssigneeTable.lastName})`, `%${searchTerm.toLowerCase()}%`)) as SQL<unknown>;
+
+            filters.push(searchFilter);
+        }
+
+
+
+        const sql2 = qry.where(and(...filters)).toSQL().sql;
+        console.log('sql', sql2)
+
+        const prepared = qry.where(and(...filters));
+
+        const result = await prepared.execute();
+
+        const items: ItemDto[] = result.map(i => {
             const item: ItemDto = {
                 ...i.items,
                 created_at: formatInTimeZone(i.items.created_at as string, 'America/New_York', 'yyyy-MM-dd HH:mm'),
@@ -118,7 +140,7 @@ export default function setUpHandlers() {
                 itemType: ItemTypes.filter(x => x.value === i.items.itemTypeId.toString()).at(0)?.text ?? '',
                 assignedTo: i.assignee
                     ? i.assignee.assigneeTypeId == AssigneeType.Individual
-                        ? `${i.assignee?.firstName} ${i.assignee?.lastName}`
+                        ? `${i.assignee?.firstName} ${i.assignee?.lastName}\n${i.assignee.email}`
                         : i.assignee.locationName
                     : null,
                 disposalDate: i.items.disposalDate ? new Date(i.items.disposalDate) : null,
@@ -127,7 +149,6 @@ export default function setUpHandlers() {
             };
             return item;
         });
-
 
         return {
             data: items
@@ -152,13 +173,11 @@ export default function setUpHandlers() {
                 disposalDate: result.disposalDate ? new Date(result.disposalDate) : null
             };
         }
-        console.log('get-item params', item)
 
         return {
             data: item,
         };
     });
-
 
     ipcMain.handle('add-item', async (_, params): Promise<ResultResponse<ItemDto[]>> => {
 
@@ -190,6 +209,7 @@ export default function setUpHandlers() {
                 description: updateItemDto.description,
                 computerName: updateItemDto.computerName,
                 ipAddress: updateItemDto.ipAddress ?? undefined,
+                itemStatusId: updateItemDto.itemStatusId,
                 macAddress: updateItemDto.macAddress ?? undefined,
                 cubicle_Room: updateItemDto.cubicle_Room ?? undefined,
                 cabinetOrRack: updateItemDto.cabinetOrRack ?? undefined,
@@ -245,7 +265,22 @@ export default function setUpHandlers() {
         };
     });
 
+    ipcMain.handle('populate-database', async (_, itemTypes: { value: string; text: string }[]): Promise<VoidResponse> => {
 
+        const types = await db
+            .select()
+            .from(ItemTypeTable)
+
+        if (types.length === 0) {
+            for (var t of itemTypes) {
+                await db.insert(ItemTypeTable).values({ id: +t.value, name: t.text });
+            }
+        }
+
+        return {
+            success: true,
+        };
+    });
 }
 
 function getItemStatusText(itemStatusId: number): string {

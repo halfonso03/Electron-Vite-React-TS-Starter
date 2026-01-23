@@ -36,6 +36,12 @@ CREATE TABLE `Item` (
 	`vendorId` text,
 	`driverType` text,
 	`sharedName` text,
+	FOREIGN KEY (`itemTypeId`) REFERENCES `ItemType`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`initiativeId`) REFERENCES `Initiative`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`assignedToId`) REFERENCES `Assignee`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `ItemType` (
+	`id` integer PRIMARY KEY NOT NULL,
+	`name` text NOT NULL
 );
