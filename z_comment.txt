@@ -14,9 +14,8 @@ remoeved this from package.json
 
 since different node versions for drizzl and electron:
     run  to migrate changes until better way ---> 
-        npx drizzle-kit generate
-       npm rebuild better-sqlite3  
-       npx drizzle-kit migrate 
-       npm run rebuild
+npx drizzle-kit generate
+npm rebuild better-sqlite3  
+npx drizzle-kit migrate 
+npm run rebuild
 
-    

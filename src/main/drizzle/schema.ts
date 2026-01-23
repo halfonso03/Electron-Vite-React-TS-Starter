@@ -43,17 +43,17 @@ export const ItemTable = sqliteTable("Item", {
 
     hbcNumber: text("hbcNumber").notNull(),
 
-    computerName: text("computerName").notNull(),
+    computerName: text("computerName"),
 
-    serialNumber: text("serialNumber").notNull(),
+    serialNumber: text("serialNumber"),
 
-    cubicle_Room: text("cubicle_Room").notNull(),
+    cubicle_Room: text("cubicle_Room"),
 
-    ipAddress: text("ipAddress").notNull(),
+    ipAddress: text("ipAddress"),
 
-    macAddress: text("macAddress").notNull(),
+    macAddress: text("macAddress"),
 
-    cabinetOrRack: text("cabinetOrRack").notNull(),
+    cabinetOrRack: text("cabinetOrRack"),
 
     itemTypeId: integer("itemTypeId").notNull(),
 
@@ -67,6 +67,12 @@ export const ItemTable = sqliteTable("Item", {
 
     assignedDate: text("assignedDate"),
 
+    kbmsId: text("kbmsId"),
 
+    vendorId: text("vendorId"),
+
+    driverType: text("driverType"),
+
+    sharedName: text("sharedName"),
 });
 

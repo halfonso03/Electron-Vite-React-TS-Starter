@@ -39,7 +39,6 @@ type Props = {
 export default function ItemForm({ item, submit, toggleDisposal }: Props) {
   const { assignees } = useAssignments();
   const { initiatives, createInitiative } = useInitiative();
-
   const { createAssignee } = useAssignments();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newAssigneeId, setNewAssigneeId] = useState(0);
@@ -133,9 +132,16 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
       { name: e.name },
       {
         onSuccess: (addedInitiative: InitiativeDto) => {
-          toast.success('Initiative added and selected');
-          setIsModalOpen(false);
-          setNewInitiativeId(addedInitiative.id!);
+          if (addedInitiative.id === 0) {
+            setNewInitiativeId(0);
+            toast.error(
+              'Initiative with the entere name already exists. Please use a different name',
+            );
+          } else {
+            toast.success('Initiative added and selected');
+            setIsModalOpen(false);
+            setNewInitiativeId(addedInitiative.id!);
+          }
         },
       },
     );
@@ -343,11 +349,11 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                 }
               ></Input>
             </FormRow>
-            {/* <FormRow label="KBMS ID" id="kbmsId">
+            <FormRow label="KBMS ID" id="kbmsId">
               <Input
                 type="text"
                 id="kbmsId"
-                defaultValue={item.kbmsId}
+                defaultValue={item.kbmsId?? undefined}
                 {...register('kbmsId')}
                 className={
                   ' form-element ' + (errors?.kbmsId?.message ? ' error ' : '')
@@ -358,7 +364,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="vendorId"
-                defaultValue={item.vendorId}
+                defaultValue={item.vendorId?? undefined}
                 {...register('vendorId')}
                 className={
                   ' form-element ' +
@@ -370,26 +376,26 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="driverType"
-                defaultValue={item.driverType}
+                defaultValue={item.driverType?? undefined}
                 {...register('driverType')}
                 className={
                   ' form-element ' +
                   (errors?.driverType?.message ? ' error ' : '')
                 }
               ></Input>
-            </FormRow> */}
-            {/* <FormRow label="Shared Name" id="sharedName">
+            </FormRow> 
+            <FormRow label="Shared Name" id="sharedName">
               <Input
                 type="text"
                 id="sharedName"
-                defaultValue={item.sharedName}
+                defaultValue={item.sharedName?? undefined}
                 {...register('sharedName')}
                 className={
                   ' form-element ' +
                   (errors?.sharedName?.message ? ' error ' : '')
                 }
               ></Input>
-            </FormRow> */}
+            </FormRow> 
           </div>
           <div className="w-1/4 flex flex-col">
             {item.id != 0 && (

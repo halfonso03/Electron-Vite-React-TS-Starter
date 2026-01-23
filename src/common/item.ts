@@ -30,10 +30,10 @@ export type Item = {
     itemStatusId: ItemStatus | number,
     // itemStatus: string,
     disposalDate?: Date | null,
-    // kbmsId?: string,
-    // vendorId?: string,
-    // driverType?: string,
-    // sharedName?: string,
+    kbmsId?: string,
+    vendorId?: string,
+    driverType?: string,
+    sharedName?: string,
 }
 
 
@@ -63,10 +63,10 @@ export type ItemDto = {
     itemStatusId: ItemStatus | number,
     itemStatus?: string,
     disposalDate?: Date | null,
-    // kbmsId?: string,
-    // vendorId?: string,
-    // driverType?: string,
-    // sharedName?: string,
+    kbmsId?: string | null | undefined,
+    vendorId?: string | null | undefined,
+    driverType?: string | null | undefined,
+    sharedName?: string | null | undefined,
 }
 
 
@@ -90,10 +90,10 @@ export type AddItemDto = {
     itemStatusId: ItemStatus | number,
 
     disposalDate?: Date | null,
-    // kbmsId?: string,
-    // vendorId?: string,
-    // driverType?: string,
-    // sharedName?: string,
+    kbmsId?: string | null | undefined,
+    vendorId?: string | null | undefined,
+    driverType?: string | null | undefined,
+    sharedName?: string | null | undefined,
 }
 
 

@@ -6,7 +6,7 @@ import { ResultResponse, VoidResponse } from "@common/types";
 import { ipcMain } from "electron";
 import { db } from "./drizzle";
 import { AssigneeTable, InitiativeTable, ItemTable } from "./drizzle/schema";
-import { asc, desc, eq, sql } from 'drizzle-orm';
+import { asc, eq, sql } from 'drizzle-orm';
 import { formatInTimeZone } from 'date-fns-tz';
 
 const ItemTypes: { value: string; text: string }[] = [
@@ -22,12 +22,22 @@ export default function setUpHandlers() {
 
     ipcMain.handle('get-assignees', async (): Promise<ResultResponse<AssigneeDto[]>> => {
 
-        const response = await db
+        const locations = await db
             .select()
             .from(AssigneeTable)
-            .orderBy(asc(AssigneeTable.lastName), desc(AssigneeTable.lastName))
+            .where(eq(AssigneeTable.assigneeTypeId, 1))
+            .orderBy(asc(AssigneeTable.locationName));
 
-        const assignees: AssigneeDto[] = response.map(a => ({
+
+        const people = await db
+            .select()
+            .from(AssigneeTable)
+            .where(eq(AssigneeTable.assigneeTypeId, 2))
+            .orderBy(asc(AssigneeTable.lastName), asc(AssigneeTable.firstName));
+
+        const results = [...people, ...locations];
+
+        const assignees: AssigneeDto[] = results.map(a => ({
             id: a.id,
             firstName: a.firstName,
             lastName: a.lastName,
@@ -66,11 +76,23 @@ export default function setUpHandlers() {
 
     ipcMain.handle('add-initiative', async (_, params: AddInitiativeDto): Promise<ResultResponse<number>> => {
 
-        const results = await db.insert(InitiativeTable).values(params).returning({ insertedId: InitiativeTable.id });
-        const newId = results[0].insertedId;
+        const existingInitiative = await db
+            .select()
+            .from(InitiativeTable)
+            .where(eq(sql<string>`lower(${InitiativeTable.name})`, params.name.trim().toLowerCase()))
+
+
+        if (existingInitiative.length === 0) {
+            const results = await db.insert(InitiativeTable).values(params).returning({ insertedId: InitiativeTable.id });
+            const newId = results[0].insertedId;
+
+            return {
+                data: newId
+            };
+        }
 
         return {
-            data: newId
+            data: 0
         };
     });
 
@@ -114,7 +136,11 @@ export default function setUpHandlers() {
 
     ipcMain.handle('get-item', async (_, params): Promise<ResultResponse<ItemDto>> => {
 
-        const result = (await db.select().from(ItemTable).where(eq(ItemTable.id, params))).at(0);
+        const result = (await db
+            .select()
+            .from(ItemTable)
+            .where(eq(ItemTable.id, params)))
+            .at(0);
 
         let item: ItemDto = defaultItem;
 
@@ -135,8 +161,6 @@ export default function setUpHandlers() {
 
 
     ipcMain.handle('add-item', async (_, params): Promise<ResultResponse<ItemDto[]>> => {
-
-        console.log('params', params)
 
         const results = await db
             .insert(ItemTable)
@@ -171,8 +195,11 @@ export default function setUpHandlers() {
                 cabinetOrRack: updateItemDto.cabinetOrRack ?? undefined,
                 initiativeId: updateItemDto.initiativeId,
                 assignedToId: updateItemDto.assignedToId,
-                assignedDate: updateItemDto.assignedToId ? sql`(CURRENT_TIMESTAMP)` : null
-
+                assignedDate: updateItemDto.assignedToId ? sql`(CURRENT_TIMESTAMP)` : null,
+                kbmsId: updateItemDto.kbmsId ?? undefined,
+                vendorId: updateItemDto.vendorId ?? undefined,
+                driverType: updateItemDto.driverType ?? undefined,
+                sharedName: updateItemDto.sharedName ?? undefined
             })
             .where(eq(ItemTable.id, updateItemDto.id!));
 

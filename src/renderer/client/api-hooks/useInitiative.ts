@@ -1,6 +1,7 @@
 import { AddInitiativeDto, InitiativeDto } from "@common/initiative";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+
 export const useInitiative = () => {
 
     const queryClient = useQueryClient();
@@ -21,10 +22,14 @@ export const useInitiative = () => {
             return { id: response.data, name: data.name } as InitiativeDto
         },
         onSuccess: (createdInitiative: InitiativeDto) => {
-            queryClient.setQueryData(["initiatives"], (old: Initiative[]) => [
-                ...old,
-                { name: createdInitiative.name, id: createdInitiative.id },
-            ]);
+            console.log('createdInitiative.id', createdInitiative)
+            if (createdInitiative.id > 0) {
+                queryClient.setQueryData(["initiatives"], (old: Initiative[]) => [
+                    ...old,
+                    { name: createdInitiative.name, id: createdInitiative.id },
+                ]);
+            }
+
         },
     });
 

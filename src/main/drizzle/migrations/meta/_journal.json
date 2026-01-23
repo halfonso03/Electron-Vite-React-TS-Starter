@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1768962295721,
-      "tag": "0000_opposite_stark_industries",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1769000880046,
-      "tag": "0001_old_boom_boom",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1769001101043,
-      "tag": "0002_lumpy_glorian",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1769004294753,
-      "tag": "0003_soft_magus",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1769014756621,
-      "tag": "0004_clear_stingray",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1769029091677,
-      "tag": "0005_hard_kat_farrell",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1769097292480,
-      "tag": "0006_regular_mulholland_black",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "6",
-      "when": 1769117090476,
-      "tag": "0007_youthful_ink",
+      "when": 1769175040464,
+      "tag": "0000_dark_dragon_man",
       "breakpoints": true
     }
   ]

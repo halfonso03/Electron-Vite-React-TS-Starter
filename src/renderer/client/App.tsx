@@ -32,25 +32,23 @@ export default function App() {
         </StyledOutlet>
       </StyledContainer>
       <Toaster
-        position="top-center"
         gutter={12}
         containerStyle={{ margin: '8px' }}
         toastOptions={{
-          position: 'bottom-right',
+          position: 'top-center',
           success: {
-            duration: 2000,
+            duration: 1500,
           },
-
           error: {
             duration: 3000,
           },
           style: {
-            fontSize: '16px',
+            fontSize: '18px',
             maxWidth: '500px',
             padding: '12px 20px',
             backgroundColor: 'var(--color-grey-800)',
             color: 'var(--color-grey-200)',
-            border: '1px solid var(--color-grey-700)',
+            border: '3px solid var(--color-grey-700)',
           },
         }}
       ></Toaster>
