@@ -12,7 +12,7 @@ declare global {
             getAssignees: () => Promise<ResultResponse<AssigneeDto[]>>
             createAssignee: (params: AddAssigneeDto) => Promise<ResultResponse<AddAssigneeDto>>
             getItem: (params: number) => Promise<ResultResponse<ItemDto>>
-            getItems: (params: { itemStatusId: string, searchTerm: string }) => Promise<ResultResponse<ItemDto[]>>
+            getItems: (params: { itemStatusId: string, searchTerm: string, pageNumber: number, pageSize: number }) => Promise<ResultResponse<ItemsPagedResult>>
             createItem: (item: AddItemDto) => Promise<ResultResponse<AddItemDto>>
             updateItem: (item: UpdateItemDto) => Promise<ResultResponse<ItemDto>>
             toggleDisposal: (id: number) => Promise<ResultResponse<boolean | null>>

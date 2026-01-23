@@ -1,5 +1,6 @@
+import { PagedList } from './../common/pagedList';
 import { ItemTypes } from './../common/itemType';
-import { ItemDto, ItemStatus, defaultItem, UpdateItemDto } from '@common/item';
+import { ItemDto, ItemStatus, defaultItem, UpdateItemDto, DbItem, ItemsPagedResult } from '@common/item';
 import { AddInitiativeDto, InitiativeDto } from '@common/initiative';
 import { AddAssigneeDto, AssigneeDto, AssigneeType } from '@common/assignee';
 import { ResultResponse, VoidResponse } from "@common/types";
@@ -86,7 +87,7 @@ export default function setUpHandlers() {
         };
     });
 
-    ipcMain.handle('get-items', async (_, { itemStatusId, searchTerm }): Promise<ResultResponse<ItemDto[]>> => {
+    ipcMain.handle('get-items', async (_, { itemStatusId, searchTerm, pageNumber, pageSize }): Promise<ResultResponse<ItemsPagedResult>> => {
         // sql<string>`lower(${InitiativeTable.name})`, params.name.trim().toLowerCase())
 
         const filters: SQL[] = [];
@@ -121,37 +122,42 @@ export default function setUpHandlers() {
             filters.push(searchFilter);
         }
 
+        const pagedList = await PagedList.ToPagedList(qry.where(and(...filters)), pageNumber, pageSize);
+
+        const dbItems = pagedList.Items as DbItem[]
+
+        // const prepared = qry.where(and(...filters));
+        // const result2 = await prepared.execute();
+        // const sql2 = qry.where(and(...filters)).toSQL().sql;
+        // console.log('sql', sql2)
+
+        const itemDtos: ItemDto[] = dbItems.map(i => ({
+            ...i.items,
+            created_at: formatInTimeZone(i.items.created_at as string, 'America/New_York', 'yyyy-MM-dd HH:mm'),
+            assignedToId: i.items.assignedToId as number | undefined,
+            initiativeId: i.items.initiativeId as number | undefined,
+            itemStatus: getItemStatusText(i.items.itemStatusId),
+            itemType: ItemTypes.filter(x => x.value === i.items.itemTypeId.toString()).at(0)?.text ?? '',
+            assignedTo: i.assignee
+                ? i.assignee.assigneeTypeId == AssigneeType.Individual
+                    ? `${i.assignee?.firstName} ${i.assignee?.lastName}\n${i.assignee.email}`
+                    : i.assignee.locationName
+                : null,
+            disposalDate: i.items.disposalDate ? new Date(i.items.disposalDate) : null,
+            assignedDate: i.items.assignedDate ? new Date(i.items.assignedDate) : null,
+            initiative: i.initiative?.name ?? null
+        }));
 
 
-        const sql2 = qry.where(and(...filters)).toSQL().sql;
-        console.log('sql', sql2)
-
-        const prepared = qry.where(and(...filters));
-
-        const result = await prepared.execute();
-
-        const items: ItemDto[] = result.map(i => {
-            const item: ItemDto = {
-                ...i.items,
-                created_at: formatInTimeZone(i.items.created_at as string, 'America/New_York', 'yyyy-MM-dd HH:mm'),
-                assignedToId: i.items.assignedToId as number | undefined,
-                initiativeId: i.items.initiativeId as number | undefined,
-                itemStatus: getItemStatusText(i.items.itemStatusId),
-                itemType: ItemTypes.filter(x => x.value === i.items.itemTypeId.toString()).at(0)?.text ?? '',
-                assignedTo: i.assignee
-                    ? i.assignee.assigneeTypeId == AssigneeType.Individual
-                        ? `${i.assignee?.firstName} ${i.assignee?.lastName}\n${i.assignee.email}`
-                        : i.assignee.locationName
-                    : null,
-                disposalDate: i.items.disposalDate ? new Date(i.items.disposalDate) : null,
-                assignedDate: i.items.assignedDate ? new Date(i.items.assignedDate) : null,
-                initiative: i.initiative?.name ?? null
-            };
-            return item;
-        });
+        const response: ItemsPagedResult = {
+            items: itemDtos,
+            totalCount: pagedList.TotalCount,
+            currentPage: pageNumber,
+            totalPages: pagedList.TotalPages
+        };
 
         return {
-            data: items
+            data: response
         };
     });
 

@@ -8,17 +8,16 @@ import ItemRow from '../items/ItemRow';
 import { ItemDto } from '@common/item';
 
 export default function InventoryList() {
-
   const { setPageNumber, itemStatusFilter, searchTerm } = usePagination();
-  const { itemResults } = useInventory(itemStatusFilter);
+  const { itemResults, loadingItems } = useInventory(itemStatusFilter);
 
   function onSetPageNumber(pageNumber: number) {
-    // setPageNumber(pageNumber);
+    setPageNumber(pageNumber);
   }
 
-  // if (loadingItems) return;
+  if (loadingItems) return;
 
-  // const paginationData = itemResults?.pagination;
+  const paginationData = itemResults?.pagination;
 
   const items: ItemDto[] | undefined = itemResults?.items;
 
@@ -62,10 +61,10 @@ export default function InventoryList() {
         ></Table.Body>
         <Table.Footer>
           <Box>
-            {/* <Pagination
+            <Pagination
               data={paginationData}
               setPageNumber={onSetPageNumber}
-            ></Pagination> */}
+            ></Pagination>
           </Box>
         </Table.Footer>
       </Table>

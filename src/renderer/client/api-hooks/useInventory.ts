@@ -1,39 +1,35 @@
 import { useQuery } from '@tanstack/react-query';
-import { formatItem } from "../helpers/ItemHelpers";
-import { ItemDto } from '@common/item';
+import { ItemDto, ItemsPagedResult } from '@common/item';
 import { usePagination } from '../contexts/usePagination';
 
 export const useInventory = (itemStatusId?: string) => {
-	const { searchTerm } = usePagination(); //pageNumber
-
-	// const queryKeySearchTerm = '';
-	//pagination: PaginationData | undefined;
+	const { searchTerm, pageNumber } = usePagination();
 
 	const { data: itemResults, isLoading: loadingItems } = useQuery<{
-		items: ItemDto[]
+		items: ItemDto[], pagination: PaginationData
 	}>({
-		queryKey: ["inventory", itemStatusId, searchTerm],  //, pageNumber, searchTerm
+		queryKey: ["inventory", itemStatusId, searchTerm, pageNumber],
 		staleTime: 0,
 		queryFn: async () => {
 
-			const response = await window.electronAPI.getItems({ itemStatusId: itemStatusId ?? "", searchTerm: searchTerm });
-			const data = response.data ?? [];
+			const response = (await window.electronAPI.getItems({
+				itemStatusId: itemStatusId ?? "",
+				searchTerm: searchTerm,
+				pageNumber: pageNumber,
+				pageSize: 10
+			})) as ItemsPagedResult;
 
-			return { items: data }
+			const items = response.items;
 
-			// const response = await agent.get<InventoryResponse>(
-			// 	`/inventory/items/${itemStatusId}`,
-			// 	{
-			// 		params: { pageNumber, searchTerm },
-			// 	}
-			// );
+			const pagination: PaginationData = {
+				currentPage: pageNumber,
+				totalPages: response.totalPages,
+				pageSize: 10,
+				totalCount: response.totalCount
+			}
 
-			// const items: Item[] = response.data.items.map(formatItem);
-			// const paginationHeader = response.headers["pagination"];
-			// const pagination: PaginationData = paginationHeader
-			// 	? JSON.parse(paginationHeader)
-			// 	: null;
-			// return { items, pagination };
+			return { items, pagination }
+
 		},
 		enabled: itemStatusId != undefined,
 	});

@@ -353,7 +353,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="kbmsId"
-                defaultValue={item.kbmsId?? undefined}
+                defaultValue={item.kbmsId ?? undefined}
                 {...register('kbmsId')}
                 className={
                   ' form-element ' + (errors?.kbmsId?.message ? ' error ' : '')
@@ -364,7 +364,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="vendorId"
-                defaultValue={item.vendorId?? undefined}
+                defaultValue={item.vendorId ?? undefined}
                 {...register('vendorId')}
                 className={
                   ' form-element ' +
@@ -376,26 +376,26 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
               <Input
                 type="text"
                 id="driverType"
-                defaultValue={item.driverType?? undefined}
+                defaultValue={item.driverType ?? undefined}
                 {...register('driverType')}
                 className={
                   ' form-element ' +
                   (errors?.driverType?.message ? ' error ' : '')
                 }
               ></Input>
-            </FormRow> 
+            </FormRow>
             <FormRow label="Shared Name" id="sharedName">
               <Input
                 type="text"
                 id="sharedName"
-                defaultValue={item.sharedName?? undefined}
+                defaultValue={item.sharedName ?? undefined}
                 {...register('sharedName')}
                 className={
                   ' form-element ' +
                   (errors?.sharedName?.message ? ' error ' : '')
                 }
               ></Input>
-            </FormRow> 
+            </FormRow>
           </div>
           <div className="w-1/4 flex flex-col">
             {item.id != 0 && (
@@ -441,7 +441,12 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                     variation="danger"
                     type="button"
                     className="w-15rem"
-                    onClick={toggleDisposal}
+                    onClick={() => {
+                      if (toggleDisposal) {
+                        setValue('assignedToId', 0);
+                        toggleDisposal?.();
+                      }
+                    }}
                   >
                     {item.itemStatusId == 4
                       ? 'Remove from Disposal'

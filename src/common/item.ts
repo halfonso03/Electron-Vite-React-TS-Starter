@@ -6,6 +6,52 @@ export enum ItemStatus {
     Disposed = 4
 }
 
+// interface for item returned from sqlite 
+export interface DbItem {
+    items: {
+        id: number;
+        description: string;
+        created_at: string;
+        hbcNumber: string;
+        computerName: string | null;
+        serialNumber: string | null;
+        cubicle_Room: string | null;
+        ipAddress: string | null;
+        macAddress: string | null;
+        cabinetOrRack: string | null;
+        itemTypeId: number;
+        initiativeId: number | null;
+        assignedToId: number | null;
+        itemStatusId: number;
+        disposalDate: string | null;
+        assignedDate: string | null;
+        kbmsId: string | null;
+        vendorId: string | null;
+        driverType: string | null;
+        sharedName: string | null;
+    };
+    assignee: {
+        id: number;
+        locationName: string | null;
+        firstName?: string | undefined | null
+        lastName?: string | undefined | null
+        email?: string | undefined | null
+        extension?: string | undefined | null
+        assigneeTypeId: | number
+    } | null;
+    initiative: {
+        id: number
+        name: string
+    } | null;
+}
+
+export interface ItemsPagedResult {
+    items: ItemDto[]
+    totalCount: number
+    currentPage: number
+    totalPages: number
+}
+
 
 export type Item = {
     id: number

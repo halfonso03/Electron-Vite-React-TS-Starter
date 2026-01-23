@@ -1,4 +1,4 @@
-import { AddItemDto, ItemDto, UpdateItemDto } from '@common/item';
+import { AddItemDto, ItemDto, ItemsPagedResult, UpdateItemDto } from '@common/item';
 import { AddInitiativeDto, InitiativeDto } from '@common/initiative';
 import { contextBridge, ipcRenderer } from 'electron';
 import { ResultResponse, VoidResponse } from '@common/types';
@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('get-initiatives');
   },
 
-  getItems: (params: { itemStatusId: string, searchTerm: string }): Promise<ResultResponse<ItemDto[]>> => {
+  getItems: (params: { itemStatusId: string, searchTerm: string, pageNumber: number, pageSize: number }): Promise<ResultResponse<ItemsPagedResult[]>> => {
     return ipcRenderer.invoke('get-items', params);
   },
 

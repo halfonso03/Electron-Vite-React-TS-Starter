@@ -13,6 +13,7 @@ export default function UpdateItem() {
   const { item, updateItem, toggleDisposal } = useItem(+id);
 
   async function onToggleDisposal() {
+    
     await toggleDisposal.mutateAsync(item!.id, {
       onSuccess: (result: { id: number; disposed: boolean | null }) => {
         if (result.disposed) {
