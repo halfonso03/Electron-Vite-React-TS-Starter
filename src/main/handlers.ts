@@ -1,7 +1,7 @@
 import { defaultItem, ItemStatus, UpdateItemDto } from './../common/item';
 import { ItemDto } from '@common/item';
 import { AddInitiativeDto, InitiativeDto } from './../common/initiative';
-import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
+import { AddAssigneeDto, AssigneeDto, AssigneeType } from '@common/assignee';
 import { ResultResponse, VoidResponse } from "@common/types";
 import { ipcMain } from "electron";
 import { db } from "./drizzle";
@@ -22,7 +22,10 @@ export default function setUpHandlers() {
 
     ipcMain.handle('get-assignees', async (): Promise<ResultResponse<AssigneeDto[]>> => {
 
-        const response = await db.select().from(AssigneeTable).orderBy(asc(AssigneeTable.lastName), desc(AssigneeTable.lastName))
+        const response = await db
+            .select()
+            .from(AssigneeTable)
+            .orderBy(asc(AssigneeTable.lastName), desc(AssigneeTable.lastName))
 
         const assignees: AssigneeDto[] = response.map(a => ({
             id: a.id,
@@ -73,27 +76,32 @@ export default function setUpHandlers() {
 
     ipcMain.handle('get-items', async (): Promise<ResultResponse<ItemDto[]>> => {
 
-        const response = await db.select().from(ItemTable);
+        const response = await db
+            .select({
+                items: ItemTable,
+                assignee: AssigneeTable,
+                initiative: InitiativeTable
+            })
+            .from(ItemTable)
+            .leftJoin(AssigneeTable, eq(ItemTable.assignedToId, AssigneeTable.id))
+            .leftJoin(InitiativeTable, eq(ItemTable.initiativeId, InitiativeTable.id));
 
         const items: ItemDto[] = response.map(i => {
-
             const item: ItemDto = {
-                id: i.id,
-                created_at: formatInTimeZone(i.created_at as string, 'America/New_York', 'yyyy-MM-dd HH:mm'),
-                description: i.description,
-                hbcNumber: i.hbcNumber,
-                computerName: i.computerName,
-                serialNumber: i.serialNumber,
-                cubicle_Room: i.cubicle_Room,
-                ipAddress: i.ipAddress,
-                macAddress: i.macAddress,
-                cabinetOrRack: i.cabinetOrRack,
-                itemTypeId: i.itemTypeId,
-                assignedToId: i.assignedToId as number | undefined,
-                initiativeId: i.initiativeId as number | undefined,
-                itemStatusId: i.itemStatusId,
-                itemStatus: getItemStatusText(i.itemStatusId),
-                itemType: ItemTypes.filter(x => x.value === i.itemTypeId.toString()).at(0)?.text ?? '',
+                ...i.items,
+                created_at: formatInTimeZone(i.items.created_at as string, 'America/New_York', 'yyyy-MM-dd HH:mm'),
+                assignedToId: i.items.assignedToId as number | undefined,
+                initiativeId: i.items.initiativeId as number | undefined,
+                itemStatus: getItemStatusText(i.items.itemStatusId),
+                itemType: ItemTypes.filter(x => x.value === i.items.itemTypeId.toString()).at(0)?.text ?? '',
+                assignedTo: i.assignee
+                    ? i.assignee.assigneeTypeId == AssigneeType.Individual
+                        ? `${i.assignee?.firstName} ${i.assignee?.lastName}`
+                        : i.assignee.locationName
+                    : null,
+                disposalDate: i.items.disposalDate ? new Date(i.items.disposalDate) : null,
+                assignedDate: i.items.assignedDate ? new Date(i.items.assignedDate) : null,
+                initiative: i.initiative?.name ?? null
             };
             return item;
         });
@@ -106,12 +114,17 @@ export default function setUpHandlers() {
 
     ipcMain.handle('get-item', async (_, params): Promise<ResultResponse<ItemDto>> => {
 
-        const response = (await db.select().from(ItemTable).where(eq(ItemTable.id, params))).at(0)
+        const result = (await db.select().from(ItemTable).where(eq(ItemTable.id, params))).at(0);
 
         let item: ItemDto = defaultItem;
 
-        if (response) {
-            item = { ...response, id: response?.id! };
+        if (result) {
+            item = {
+                ...result,
+                id: result?.id!,
+                assignedDate: result.assignedToId && result.assignedDate ? new Date(result.assignedDate) : null,
+                disposalDate: result.disposalDate ? new Date(result.disposalDate) : null
+            };
         }
         console.log('get-item params', item)
 
@@ -125,7 +138,13 @@ export default function setUpHandlers() {
 
         console.log('params', params)
 
-        const results = await db.insert(ItemTable).values(params).returning({ insertedId: ItemTable.id, created_at: ItemTable.created_at });
+        const results = await db
+            .insert(ItemTable)
+            .values(params)
+            .returning({
+                insertedId: ItemTable.id,
+                created_at: ItemTable.created_at
+            });
 
         params.id = results[0].insertedId;
         params.created_at = results[0].created_at
@@ -151,7 +170,9 @@ export default function setUpHandlers() {
                 cubicle_Room: updateItemDto.cubicle_Room ?? undefined,
                 cabinetOrRack: updateItemDto.cabinetOrRack ?? undefined,
                 initiativeId: updateItemDto.initiativeId,
-                assignedToId: updateItemDto.assignedToId
+                assignedToId: updateItemDto.assignedToId,
+                assignedDate: updateItemDto.assignedToId ? sql`(CURRENT_TIMESTAMP)` : null
+
             })
             .where(eq(ItemTable.id, updateItemDto.id!));
 

@@ -52,11 +52,12 @@ export type ItemDto = {
     itemType?: string
     initiativeId?: number | undefined | null
 
-    // initiative?: string
+    initiative?: string | null
     assignedDate?: Date | null
     assignedToId?: number | undefined | null
 
-    // assignedTo?: string | null
+    assignedTo?: string | null
+
     // assignedToEmail?: string | null
     // assignedToExtension?: string | null,
     itemStatusId: ItemStatus | number,
@@ -87,7 +88,7 @@ export type AddItemDto = {
     assignedDate?: Date | null
 
     itemStatusId: ItemStatus | number,
-    
+
     disposalDate?: Date | null,
     // kbmsId?: string,
     // vendorId?: string,

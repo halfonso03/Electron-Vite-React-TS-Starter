@@ -15,7 +15,7 @@ import Button from '../../ui/Button';
 import Modal from '../../components/Modal';
 import type { AssigneeFormData } from '../../form-validation-schemas/assigneeSchema';
 import AssigneeModal from '../assignee/AssigneeModal';
-import { AddAssigneeDto, AssigneeDto } from '@common/assignee';
+import { AddAssigneeDto, AssigneeDto, AssigneeType } from '@common/assignee';
 import { ItemDto } from '@common/item';
 import { ItemTypes } from '@common/itemType';
 
@@ -48,23 +48,25 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
     ModalOpened.Assignee,
   );
 
-  const peopleOptions = assignees
+  const assigneeOptions = assignees
     ? assignees?.map((p: AssigneeDto) => ({
         value: p.id.toString(),
         text:
-          p.lastName +
-          ', ' +
-          p.firstName +
-          ' - ' +
-          p.email +
-          (p.extension ? ' - ' + p.extension : ''),
+          p.assigneeTypeId == AssigneeType.Individual
+            ? p.lastName +
+              ', ' +
+              p.firstName +
+              ' - ' +
+              p.email +
+              (p.extension ? ' - ' + p.extension : '')
+            : p.locationName!,
       }))
     : [];
 
   const updatedPeopleOptions = [
     { value: '0', text: 'Unassigned' },
     { value: '-1', text: 'Add Assignee' },
-    ...peopleOptions,
+    ...assigneeOptions,
   ];
 
   const initiativeOptions = [
@@ -96,7 +98,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
       hbcNumber: item?.hbcNumber ?? undefined,
       assignedToId: item?.assignedToId ?? 0,
       ipAddress: item?.ipAddress,
-      initiativeId: item?.initiativeId,
+      initiativeId: item?.initiativeId ?? 0,
       cubicle_Room: item?.cubicle_Room,
       itemTypeId: item?.itemTypeId,
       macAddress: item?.macAddress,
@@ -125,7 +127,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
       },
     });
   };
-  
+
   const onAddInitiative = async (e: { name: string }) => {
     await createInitiative.mutateAsync(
       { name: e.name },
@@ -144,7 +146,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
       setValue('itemTypeId', item?.itemTypeId);
     }
 
-    if (peopleOptions?.length > 0) {
+    if (assigneeOptions?.length > 0) {
       if (newAssigneeId != 0) {
         setValue('assignedToId', newAssigneeId);
       } else if (item?.assignedToId) {
@@ -163,7 +165,8 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
     initiativeOptions?.length,
     item,
     newAssigneeId,
-    peopleOptions?.length,
+    newInitiativeId,
+    assigneeOptions?.length,
     setValue,
   ]);
 
@@ -401,14 +404,14 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                 ></Input>
               </FormRow>
             )}
-            {/* <FormRow label="Date Assigned" id="dateAssigned">
+            <FormRow label="Date Assigned" id="dateAssigned">
               <Input
                 type="text"
                 disabled={true}
                 id="dateAssigned"
                 value={
-                  item.dateAssigned
-                    ? formatDate(item.dateAssigned, 'M/d/yy')
+                  item.assignedDate
+                    ? formatDate(item.assignedDate, 'M/d/yy')
                     : ''
                 }
               ></Input>
@@ -424,7 +427,7 @@ export default function ItemForm({ item, submit, toggleDisposal }: Props) {
                     : ''
                 }
               ></Input>
-            </FormRow> */}
+            </FormRow>
             {item.id != 0 && (
               <FormRow label="&nbsp;" id="" style={{ marginTop: 'auto' }}>
                 <Box className="w-full text-end">

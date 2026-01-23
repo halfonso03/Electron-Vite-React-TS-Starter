@@ -26,7 +26,7 @@ export default function ItemRow({ item, searchTerm }: Props) {
       <div className="cursor-pointer">
         <SearchTermMarker
           textToFind={searchTerm || ''}
-          textToDisplay={item.hbcNumber}
+          textToDisplay={item.hbcNumber ?? undefined}
         ></SearchTermMarker>
       </div>
       <div className="cursor-pointer">
@@ -38,22 +38,22 @@ export default function ItemRow({ item, searchTerm }: Props) {
       <div className="cursor-pointer">
         <SearchTermMarker
           textToFind={searchTerm || ''}
-          textToDisplay={item.serialNumber}
+          textToDisplay={item.serialNumber ?? undefined}
         ></SearchTermMarker>
       </div>
       <div className="cursor-pointer">
         <SearchTermMarker
           textToFind={searchTerm || ''}
-          textToDisplay={item.description}
+          textToDisplay={item.description ?? undefined}
         ></SearchTermMarker>
       </div>
       <div className="cursor-pointer">
         <SearchTermMarker
           textToFind={searchTerm || ''}
-          textToDisplay={item.computerName}
+          textToDisplay={item.computerName ?? undefined}
         ></SearchTermMarker>
       </div>
-      <div className="cursor-pointer">{'item.initiative'}</div>
+      <div className="cursor-pointer">{item.initiative}</div>
       <div className="cursor-pointer text-center">{item.cubicle_Room}</div>
       {/* <div className="cursor-pointer text-center">
         <div>
@@ -63,16 +63,17 @@ export default function ItemRow({ item, searchTerm }: Props) {
       <div
         className="border-gray-900 cursor-pointer"
         onClick={(e: SyntheticEvent<HTMLDivElement>) => {
-          e.stopPropagation();
-          gotoPerson(item.assignedToId);
+          if (item.assignedToId) {
+            e.stopPropagation();
+            gotoPerson(item.assignedToId);
+          }
         }}
       >
-        {/* item.assignedTo */}
-        {true && (
+        {item.assignedTo && (
           <div>
             <SearchTermMarker
               textToFind={searchTerm || ''}
-              textToDisplay={'item.assignedTo'}
+              textToDisplay={item.assignedTo}
             ></SearchTermMarker>
           </div>
         )}

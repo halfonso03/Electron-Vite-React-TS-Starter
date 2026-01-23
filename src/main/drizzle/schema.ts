@@ -57,9 +57,9 @@ export const ItemTable = sqliteTable("Item", {
 
     itemTypeId: integer("itemTypeId").notNull(),
 
-    initiativeId: integer("initiativeId"),
+    initiativeId: integer("initiativeId").references(() => InitiativeTable.id),
 
-    assignedToId: integer("assignedToId"),
+    assignedToId: integer("assignedToId").references(() => AssigneeTable.id),
 
     itemStatusId: integer("itemStatusId").notNull(),
 

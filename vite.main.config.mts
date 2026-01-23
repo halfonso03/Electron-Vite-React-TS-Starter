@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import pkg from './package.json'; // Ensure "resolveJsonModule" is true in tsconfig
+import path, { resolve } from 'path';
 export default defineConfig({
   build: {
     lib: {
@@ -7,6 +8,7 @@ export default defineConfig({
       formats: ['cjs'],
       fileName: () => 'main.js', // Force the filename to main.js
     },
+
     rollupOptions: {
       // Use the imported pkg object instead of require
       external: [
@@ -16,4 +18,10 @@ export default defineConfig({
       ],
     },
   },
+  resolve: {
+    alias: {
+      "@common": path.resolve(__dirname, "src/common"),
+    }
+  },
+
 });

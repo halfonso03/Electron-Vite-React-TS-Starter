@@ -10,7 +10,13 @@ export default defineConfig({
     build: {
         outDir: '../../.vite/renderer/main_window', // Adjust to match your Forge config
     },
-    root: path.resolve(__dirname, 'src/renderer')
+    root: path.resolve(__dirname, 'src/renderer'),
+    resolve: {
+        alias: {
+            "@common": path.resolve(__dirname, "src/common"),
+
+        }
+    },
 });
 
 

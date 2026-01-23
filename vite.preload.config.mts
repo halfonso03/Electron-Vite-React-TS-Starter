@@ -1,3 +1,4 @@
+import path from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -11,5 +12,11 @@ export default defineConfig({
     rollupOptions: {
       external: ['electron', 'better-sqlite3'],
     },
+  },
+  resolve: {
+    alias: {
+      "@common": path.resolve(__dirname, "src/common"),
+
+    }
   },
 });

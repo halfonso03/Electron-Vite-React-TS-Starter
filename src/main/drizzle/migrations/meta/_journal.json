@@ -50,6 +50,13 @@
       "when": 1769097292480,
       "tag": "0006_regular_mulholland_black",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1769117090476,
+      "tag": "0007_youthful_ink",
+      "breakpoints": true
     }
   ]
 }
