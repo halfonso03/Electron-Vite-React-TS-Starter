@@ -133,7 +133,7 @@ export default function setUpHandlers() {
 
 
 
-        const totalCount = (await  qryCountTemp.where(and(...filters))).at(0)?.count as number;
+        const totalCount = (await qryCountTemp.where(and(...filters))).at(0)?.count as number;
 
         const result = await qry.where(and(...filters)).offset((pageNumber - 1) * pageSize).limit(pageSize).execute()
 
@@ -280,6 +280,10 @@ export default function setUpHandlers() {
     ipcMain.handle('delete', async (): Promise<VoidResponse> => {
 
         await db.delete(ItemTable);
+        await db.delete(AssigneeTable);
+        await db.delete(InitiativeTable);
+
+
 
         return {
             success: true,

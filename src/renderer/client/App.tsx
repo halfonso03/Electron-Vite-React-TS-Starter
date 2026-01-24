@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { PaginationContextProvider } from './contexts/PaginationContextProvider';
 import { ItemTypes } from '@common/itemType';
+import Button from './ui/Button';
 
 const StyledOutlet = styled.div`
   background-color: var(--color-gray-900);
@@ -25,13 +26,13 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <StyledContainer className="w-full">
         <Header>
-          <Link to={'/'}>MTF Inventory</Link>
+          <Link to={'/'}>Inventory</Link>
         </Header>
         <PaginationContextProvider>
           <StyledOutlet>
-            {/* <Button variation="secondary" onClick={window.electronAPI.delete}>
+            <Button variation="secondary" onClick={window.electronAPI.delete}>
               Delete All
-            </Button> */}
+            </Button>
             <Outlet></Outlet>
           </StyledOutlet>
         </PaginationContextProvider>
