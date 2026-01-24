@@ -52,7 +52,6 @@ export interface ItemsPagedResult {
     totalPages: number
 }
 
-
 export type Item = {
     id: number
     description: string

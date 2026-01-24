@@ -7,7 +7,7 @@ import { ResultResponse, VoidResponse } from "@common/types";
 import { ipcMain } from "electron";
 import { db } from "./drizzle";
 import { AssigneeTable, InitiativeTable, ItemTable, ItemTypeTable } from "./drizzle/schema";
-import { and, asc, eq, like, or, SQL, sql } from 'drizzle-orm';
+import { and, asc, count, eq, like, or, SQL, sql } from 'drizzle-orm';
 import { formatInTimeZone } from 'date-fns-tz';
 
 
@@ -103,6 +103,16 @@ export default function setUpHandlers() {
             .leftJoin(AssigneeTable, eq(ItemTable.assignedToId, AssigneeTable.id))
             .leftJoin(InitiativeTable, eq(ItemTable.initiativeId, InitiativeTable.id))
 
+        let qryCount = db
+            .select({
+                count: count()
+            })
+            .from(ItemTable)
+            .innerJoin(ItemTypeTable, eq(ItemTable.itemTypeId, ItemTypeTable.id))
+            .leftJoin(AssigneeTable, eq(ItemTable.assignedToId, AssigneeTable.id))
+            .leftJoin(InitiativeTable, eq(ItemTable.initiativeId, InitiativeTable.id))
+            .where(and(...filters));
+
         if (typeof itemStatusId == 'string' && itemStatusId) {
             filters.push(eq(ItemTable.itemStatusId, +itemStatusId));
         }
@@ -122,14 +132,22 @@ export default function setUpHandlers() {
             filters.push(searchFilter);
         }
 
-        const pagedList = await PagedList.ToPagedList(qry.where(and(...filters)), pageNumber, pageSize);
+
+
+        const totalCount = (await qryCount).at(0)?.count as number;
+
+       console.log('totalCount', totalCount) 
+       console.log('pageSize', pageSize)
+       console.log('pageNumber', pageNumber)
+
+
+        const pagedList = await PagedList.ToPagedList(qry.orderBy(asc(ItemTable.id)).where(and(...filters)), totalCount, pageSize, pageNumber);
 
         const dbItems = pagedList.Items as DbItem[]
 
         // const prepared = qry.where(and(...filters));
         // const result2 = await prepared.execute();
         // const sql2 = qry.where(and(...filters)).toSQL().sql;
-        // console.log('sql', sql2)
 
         const itemDtos: ItemDto[] = dbItems.map(i => ({
             ...i.items,
@@ -155,6 +173,7 @@ export default function setUpHandlers() {
             currentPage: pageNumber,
             totalPages: pagedList.TotalPages
         };
+
 
         return {
             data: response

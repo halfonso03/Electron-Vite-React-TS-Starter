@@ -6,21 +6,20 @@ export class PagedList {
     TotalPages: number
     Items: []
 
-    constructor(count: number, pageSize: number, currentPage: number) {
+    constructor(result: [], count: number, pageSize: number, currentPage: number) {
         this.TotalCount = count;
         this.PageSize = pageSize;
         this.CurrentPage = currentPage;
         this.TotalPages = Math.round(Math.ceil(count / pageSize));
-        this.Items = [];
+        this.Items = result;
     }
 
-    static async ToPagedList(qry: any, pageNumber: number, pageSize: number): Promise<PagedList> {
+    static async ToPagedList(qry: any, totalCount: number, pageSize: number, currentPage: number): Promise<PagedList> {
 
-        const result = await qry.offset(pageNumber - 1).limit(pageSize).execute();
 
-        const pagedList = new PagedList(result.length, pageSize, pageNumber);
+        const result = await qry.offset((currentPage - 1) * pageSize).limit(pageSize).execute();
 
-        pagedList.Items = result as [];
+        const pagedList = new PagedList(result, totalCount, pageSize, currentPage);
 
         return pagedList;
     }
