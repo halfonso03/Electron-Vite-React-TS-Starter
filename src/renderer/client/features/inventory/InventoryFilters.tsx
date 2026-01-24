@@ -11,16 +11,16 @@ export default function InventoryFilters({
   itemStatusFilter,
   setItemStatusFilter,
 }: Props) {
-  const { setSearchTerm } = usePagination(); //setPageNumber
+  const { setSearchTerm,setPageNumber } = usePagination(); //
 
   function filterButtonClick(itemStatus: string) {
     setItemStatusFilter(itemStatus);
-    // setPageNumber(1);
+    setPageNumber(1);
   }
 
   function onSearch(searchTerm: string) {
     setSearchTerm(searchTerm);
-    // setPageNumber(1);
+    setPageNumber(1);
   }
 
   return (

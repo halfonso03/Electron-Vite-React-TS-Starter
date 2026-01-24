@@ -26,7 +26,7 @@ export default function InventoryList() {
   return (
     <>
       <div className="w-1/4 text-gray-300 self-center mb-2 px-2">
-        {/* {itemResults?.pagination?.totalCount + ' item(s) displayed.'} */}
+        {itemResults?.pagination?.totalCount + ' item(s) displayed.'}
       </div>
 
       <Table columns=".1fr .12fr .25fr .25fr .25fr .1fr .16fr .2fr .14fr .17fr .14fr ">

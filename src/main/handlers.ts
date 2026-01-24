@@ -103,15 +103,14 @@ export default function setUpHandlers() {
             .leftJoin(AssigneeTable, eq(ItemTable.assignedToId, AssigneeTable.id))
             .leftJoin(InitiativeTable, eq(ItemTable.initiativeId, InitiativeTable.id))
 
-        let qryCount = db
+        let qryCountTemp = db
             .select({
                 count: count()
             })
             .from(ItemTable)
             .innerJoin(ItemTypeTable, eq(ItemTable.itemTypeId, ItemTypeTable.id))
             .leftJoin(AssigneeTable, eq(ItemTable.assignedToId, AssigneeTable.id))
-            .leftJoin(InitiativeTable, eq(ItemTable.initiativeId, InitiativeTable.id))
-            .where(and(...filters));
+            .leftJoin(InitiativeTable, eq(ItemTable.initiativeId, InitiativeTable.id));
 
         if (typeof itemStatusId == 'string' && itemStatusId) {
             filters.push(eq(ItemTable.itemStatusId, +itemStatusId));
@@ -134,14 +133,11 @@ export default function setUpHandlers() {
 
 
 
-        const totalCount = (await qryCount).at(0)?.count as number;
+        const totalCount = (await  qryCountTemp.where(and(...filters))).at(0)?.count as number;
 
-       console.log('totalCount', totalCount) 
-       console.log('pageSize', pageSize)
-       console.log('pageNumber', pageNumber)
+        const result = await qry.where(and(...filters)).offset((pageNumber - 1) * pageSize).limit(pageSize).execute()
 
-
-        const pagedList = await PagedList.ToPagedList(qry.orderBy(asc(ItemTable.id)).where(and(...filters)), totalCount, pageSize, pageNumber);
+        const pagedList = await PagedList.ToPagedList(result, totalCount, pageSize, pageNumber);
 
         const dbItems = pagedList.Items as DbItem[]
 

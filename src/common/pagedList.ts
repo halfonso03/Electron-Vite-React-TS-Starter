@@ -14,10 +14,7 @@ export class PagedList {
         this.Items = result;
     }
 
-    static async ToPagedList(qry: any, totalCount: number, pageSize: number, currentPage: number): Promise<PagedList> {
-
-
-        const result = await qry.offset((currentPage - 1) * pageSize).limit(pageSize).execute();
+    static async ToPagedList(result: any, totalCount: number, pageSize: number, currentPage: number): Promise<PagedList> {
 
         const pagedList = new PagedList(result, totalCount, pageSize, currentPage);
 
